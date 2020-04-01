@@ -18,15 +18,20 @@ The libraries we need are:
 @Table(name="FINANCES_USER")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
-    private Long userId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "USER_ID")
+  private Long userId;
 ```
 
 #### Session Factory
-The purpose of that is to connect our application with Hibernate.
-Create the session factory in a Util class
+The purpose of that is to handle the session, that is the interface between our application and Hibernate.
+Create the session factory in a Util class using the Factory pattern.
+In this class, we have to say to Hibernate where are the **annotated classes**
+```java
+Configuration configuration = new Configuration();
+configuration.addAnnotatedClass(User.class);
+```
 
 #### Hibernate properties
 Setup the properties to allow Hibernate to connect with the database
@@ -37,4 +42,23 @@ With the configuration above, we can make a test and see if everything is workin
 Session session = HibernateUtil.getSessionFactory().openSession();
 session.beginTransaction();
 session.close();
+```
+
+### Hibernate XML configuration
+Instead of using the properties file, we can setup the hibernate configuration in a XML file. This is the most common approach.
+You can have a look to all the properties here: https://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html/ch03.html#configuration-programmatic
+
+Also, here **we can map the classes instead of doing it in the code**
+
+```xml
+<mapping class="com.infiniteskills.data.entities.User"/>
+```
+
+Don't forget to update your SessionFactory to make sure that is using the xml configuration:
+```java
+configuration.configure(); // Very important
+return configuration
+        .buildSessionFactory(new StandardServiceRegistryBuilder()
+                .applySettings(configuration.getProperties()) // use the xml configuration
+                .build());
 ```
