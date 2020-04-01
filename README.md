@@ -62,3 +62,76 @@ return configuration
                 .applySettings(configuration.getProperties()) // use the xml configuration
                 .build());
 ```
+> ❓ Doesn't explain anything about why this code works with the XML file
+
+## Basic Mapping Annotations
+
+#### @Access
+
+Defines the access strategy of Hibernate to the entity attributes
+
+```java
+@Access(AccessType.FIELD)
+```
+Access to the attribute directly with reflection
+
+```java
+@Access(AccessType.PROPERTY)
+```
+Access to the attribute with the getter/setter methods. So you can add some logic there
+
+
+#### @Column
+
+```java
+@Column(name = "...", updatable = false)
+```
+Don't include these elements on update actions
+
+```java
+@Column(name = "...", nullable = false)
+```
+This attribute/field can't be null
+
+```java
+@Basic
+```
+Same as "nullable = false" but doesnt't give information to Hibernate on creating the DB Schema
+
+#### Identifiers
+
+```java
+ @GeneratedValue(strategy = GenerationType.SEQUENCE)
+```
+Fast but not avaliable for MySQL. Oracle supports
+
+```java
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+```
+Auto-incremented
+
+```java
+@GeneratedValue(strategy = GenerationType.TABLE, generator = "user_table_generator")
+@TableGenerator(name = "user_table_generator", table = "IFINANCES_KEYS", pkColumnName = "PK_NAME", valueColumnName = "PK_VALUE")
+```
+Uses another table, IFINANCES_KEYS in this case, to increment the primary key
+> ❓ Don't understand
+
+```java
+@GeneratedValue(strategy = GenerationType.AUTO)
+```
+
+#### @Transient
+Says to hibernate to **not** map an attribute of an Entity
+
+```java
+@Transient
+private boolean valid;
+```
+valid is an attribute of the Entitiy but is not a Column of the DB Table
+
+#### @Temporal
+To deal with Date/Time types
+
+#### @Formula
+Used for calculated attributes on runtime
