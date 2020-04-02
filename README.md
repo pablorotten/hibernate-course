@@ -2,14 +2,14 @@
 
 ## Initial setup
 
-#### POM
+### POM
 
 The libraries we need are:
 * Hibernate: Version 4
 * log4j: configure also in log4j.properties file
 * mysql-connector: Make sure that is the same version of your MySQL installation
 
-#### User Entitiy
+### User Entitiy
 * Create a POJO with annotations for Mapping the USER table with the User class
 * Use @Table annotation for the matching the corresponding Table of the Class
 * Use @Column even if is not needed and @Id for the primary key
@@ -24,7 +24,7 @@ public class User {
   private Long userId;
 ```
 
-#### Session Factory
+### Session Factory
 The purpose of that is to handle the session, that is the interface between our application and Hibernate.
 Create the session factory in a Util class using the Factory pattern.
 In this class, we have to say to Hibernate where are the **annotated classes**
@@ -33,10 +33,10 @@ Configuration configuration = new Configuration();
 configuration.addAnnotatedClass(User.class);
 ```
 
-#### Hibernate properties
+### Hibernate properties
 Setup the properties to allow Hibernate to connect with the database
 
-#### Application
+### Application
 With the configuration above, we can make a test and see if everything is working fine
 ```java
 Session session = HibernateUtil.getSessionFactory().openSession();
@@ -66,7 +66,7 @@ return configuration
 
 ## Basic Mapping Annotations
 
-#### @Access
+### @Access
 
 Defines the access strategy of Hibernate to the entity attributes
 
@@ -81,7 +81,7 @@ Access to the attribute directly with reflection
 Access to the attribute with the getter/setter methods. So you can add some logic there
 
 
-#### @Column
+### @Column
 
 ```java
 @Column(name = "...", updatable = false)
@@ -98,7 +98,7 @@ This attribute/field can't be null
 ```
 Same as "nullable = false" but doesnt't give information to Hibernate on creating the DB Schema
 
-#### Identifiers
+### Identifiers
 
 ```java
  @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -121,7 +121,7 @@ Uses another table, IFINANCES_KEYS in this case, to increment the primary key
 @GeneratedValue(strategy = GenerationType.AUTO)
 ```
 
-#### @Transient
+### @Transient
 Says to hibernate to **not** map an attribute of an Entity
 
 ```java
@@ -130,10 +130,10 @@ private boolean valid;
 ```
 valid is an attribute of the Entitiy but is not a Column of the DB Table
 
-#### @Temporal
+### @Temporal
 To deal with Date/Time types
 
-#### @Formula
+### @Formula
 Used for calculated attributes on runtime
 
 ## Hibernate Types
@@ -165,13 +165,14 @@ public class Address { // Auxiliary class. Is not an entity, the values are stor
 }
 ```  
 
+## Mapping Composite and Collection Types
 
 ### Mapping Composite Value Types
 
-There are 2 ways to do it, with an Auxiliary table or directly in the annotations
+Uses an auxiliary class to define the attributes of the entity 
 
 #### @Embeddable
-Create a composite value type class with the @Embeddable annotation:
+Create a Composite Value Type (CVT) class with the @Embeddable annotation:
 ```java
 @Embeddable // Composite value type
 public class Address {
@@ -190,7 +191,7 @@ This class has the columns but is not an entity by itself. Is used by other enti
 
 For using this Composite value type class there're 2 ways:
 
-##### @Embedded
+#### @Embedded
 
 If the @Column names of the CVT match with the column names of the Entity, you can directly use the class.
 Then, write the getters and setters for all the attributes of the CVT @Embeddable class:
@@ -210,7 +211,7 @@ public class Bank {
 }
 ```
 
-##### @Embedded + @AttributeOverrides
+#### @Embedded + @AttributeOverrides
 
 If not, you can still use the CVT setting in the annotations the column names:
 ```java
