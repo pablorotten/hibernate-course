@@ -1,16 +1,10 @@
 package com.infiniteskills.data.entities;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 @Entity
 @Table(name="BANK")
@@ -43,6 +37,11 @@ public class Bank {
 
 	@Column(name="CREATED_BY")
 	private String createdBy;
+
+	@ElementCollection // Map a collection of instances
+	@CollectionTable(name = "BANK_CONTACT", joinColumns = @JoinColumn(name = "BANK_ID")) // Join the id of BANK with this column of BANK_CONTACT
+	@Column(name = "NAME") // Each String of the contacts collection is an entry in the NAME column
+	private Collection<String> contacts = new ArrayList<String>();
 
 	public Long getBankId() {
 		return bankId;
@@ -139,4 +138,7 @@ public class Bank {
 
 	public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
+	public Collection<String> getContacts() { return contacts; }
+
+	public void setContacts(Collection<String> contacts) { this.contacts = contacts; }
 }

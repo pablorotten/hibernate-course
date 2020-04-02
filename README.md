@@ -170,7 +170,7 @@ public class Address { // Auxiliary class. Is not an entity, the values are stor
 
 There are 2 ways to do it, with an Auxiliary table or directly in the annotations
 
-####@Embeddable
+#### @Embeddable
 Create a composite value type class with the @Embeddable annotation:
 ```java
 @Embeddable // Composite value type
@@ -199,7 +199,6 @@ Then, write the getters and setters for all the attributes of the CVT @Embeddabl
 @Table(name="BANK")
 public class Bank {
 
-  //...
 	@Embedded // Composite value type. Annotation not needed, Hibernate figures out
 	private Address address = new Address();
 	
@@ -234,7 +233,38 @@ address.setAddressLine2("line2");
 address.setCity("Philadelphia");
 user.setAddress(address);
 ```
+### Mapping Collections Of Basic Value Types
 
+#### @ElementCollection (One to Many)
 
+If you have a One to Many relationship for saving a Basic Value such as a String, Double, etc.
+You can use @ElementCollection to map it:
+
+One BANK has many BANK_CONTACTs so we have this relationship:
+![](img/bank-bank_contact.png)
+
+in **BANK_CONTACT** we just want to save the name of the contact and the id of the bank
+![](img/bank_contact.png)
+
+From the point of view of the Entity **Bank**, the **BANK_CONTACT** table is a Collection of Strings with the names of the contacts.
+Can also be a List, Set...
+
+```java
+@ElementCollection // Map a collection of instances
+@CollectionTable(name = "BANK_CONTACT", joinColumns = @JoinColumn(name = "BANK_ID")) // Join the id of BANK with this column of BANK_CONTACT
+@Column(name = "NAME") // Each String of the contacts collection is an entry in the NAME column
+private Collection<String> contacts = new ArrayList<String>();
+
+public Collection<String> getContacts() { return contacts; }
+public void setContacts(Collection<String> contacts) { this.contacts = contacts; }
+```
+
+And we use it like this:
+```java
+bank.getContacts().add("Joe");
+bank.getContacts().add("Mary");
+```
+
+This will add to the **BANK_CONTACT** table 2 new entries.
 
 

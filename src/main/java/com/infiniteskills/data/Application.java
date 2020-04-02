@@ -19,7 +19,9 @@ public class Application {
 //      timeTest(session);
 //      userTest(session);
 //      userAgeTest(session);
-      bankTest(session);
+//      bankTest(session);
+//      userAddressTest(session);
+      bankContactTest(session);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -130,6 +132,28 @@ public class Application {
 
     user.setAddress(address);
     session.save(user);
+
+    transaction.commit();
+  }
+
+  public static void bankContactTest(Session session) {
+    Transaction transaction = session.beginTransaction();
+
+    Bank bank = new Bank();
+    bank.setName("Federal Trust");
+    bank.setAddressLine1("33 Wall Street");
+    bank.setAddressLine2("Suite 233");
+    bank.setCity("New York");
+    bank.setState("NY");
+    bank.setZipCode("12345");
+    bank.setInternational(false);
+    bank.setCreatedBy("Kevin");
+    bank.setCreatedDate(new Date());
+    bank.setLastUpdatedBy("Kevin");
+    bank.setLastUpdatedDate(new Date());
+    bank.getContacts().add("Joe");
+    bank.getContacts().add("Mary");
+    session.save(bank);
 
     transaction.commit();
   }
