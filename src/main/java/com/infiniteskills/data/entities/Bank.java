@@ -60,6 +60,7 @@ public class Bank {
 		this.name = name;
 	}
 
+	// Getters and Setters from the Address class
 	public String getAddressLine1() {
 		return address.getAddressLine1();
 	}
@@ -136,8 +137,6 @@ public class Bank {
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+	public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
 }

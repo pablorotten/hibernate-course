@@ -186,11 +186,14 @@ public class Address {
 	private String city;
 }
 ```
-This class has the columns but is not an entity by itself. Is used by other entitites
+This class has the columns but is not an entity by itself. Is used by other entities such as **Bank**
 
 For using this Composite value type class there're 2 ways:
 
-If the @Column names of the CVT match with the column names of the Entity, you can directly use the class
+##### @Embedded
+
+If the @Column names of the CVT match with the column names of the Entity, you can directly use the class.
+Then, write the getters and setters for all the attributes of the CVT @Embeddable class:
 ```java
 @Entity
 @Table(name="BANK")
@@ -199,8 +202,16 @@ public class Bank {
   //...
 	@Embedded // Composite value type. Annotation not needed, Hibernate figures out
 	private Address address = new Address();
+	
+	// Getters and Setters from the Address class
+	public String getAddressLine1() {	return address.getAddressLine1();	}
+	public void setAddressLine1(String addressLine1) { this.address.setAddressLine1(addressLine1);	}
+	public String getCity() {	return address.getCity();	}
 	//...
+}
 ```
+
+##### @Embedded + @AttributeOverrides
 
 If not, you can still use the CVT setting in the annotations the column names:
 ```java
@@ -209,6 +220,19 @@ If not, you can still use the CVT setting in the annotations the column names:
    @AttributeOverride(name="addressLine1", column=@Column(name="USER_ADDRESS_LINE_1")),
    @AttributeOverride(name="addressLine2", column=@Column(name="USER_ADDRESS_LINE_2"))})
 private Address address;
+
+public Address getAddress() { return address; }
+public void setAddress(Address address) { this.address = address; }
+```
+
+In this case there're no Getters and Setters of the attribures, directly create the Address object and add it:
+
+```java
+Address address = new Address();
+address.setAddressLine1("line 1");
+address.setAddressLine2("line2");
+address.setCity("Philadelphia");
+user.setAddress(address);
 ```
 
 
