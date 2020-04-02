@@ -135,3 +135,32 @@ To deal with Date/Time types
 
 #### @Formula
 Used for calculated attributes on runtime
+
+### Hibernate Types
+
+* Entitiy Types: have a database identity
+* Vaue Types: no database identitiy
+  * Basic
+  * Composite Types
+  * Collection
+
+```java
+@Entity
+public class User {
+  
+  @Id
+  private Long userId; //Basic Value Type
+  private String firstName; //Basic Value Type
+  private User referredBy; //Entity Type
+  private List<String> aliases; //Collection Value Type
+  private Address address; //Composite Value Type
+}
+
+public class Address { // Auxiliary class. Is not an entity, the values are stored in the User table
+  
+  private String addressLine1;
+  private String addressLine2;
+  private String city;
+  // ...
+}
+```  
