@@ -16,12 +16,12 @@ public class Application {
     Session session = HibernateUtil.getSessionFactory().openSession();
 
     try {
-//      timeTest(session);
-//      userTest(session);
-//      userAgeTest(session);
-//      bankTest(session);
-//      userAddressTest(session);
-      bankContactTest(session);
+//      timeDemo(session);
+//      userDemo(session);
+//      userAgeDemo(session);
+//      bankDemo(session);
+//      userAddressDemo(session);
+      bankContactDemo(session);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -34,7 +34,7 @@ public class Application {
 
   }
 
-  public static void userTest(Session session) {
+  public static void userDemo(Session session) {
     session.getTransaction().begin();
 
     User user = new User();
@@ -50,7 +50,7 @@ public class Application {
     session.save(user);
   }
 
-  public static void userAgeTest(Session session) {
+  public static void userAgeDemo(Session session) {
     session.getTransaction().begin();
 
     User user = new User();
@@ -79,7 +79,7 @@ public class Application {
     return calendar.getTime();
   }
 
-  public static void timeTest(Session session){
+  public static void timeDemo(Session session){
     session.getTransaction().begin();
     TimeTest test = new TimeTest(new Date());
     session.save(test);
@@ -88,7 +88,7 @@ public class Application {
     System.out.println(test.toString());
   }
 
-  public static void bankTest(Session session) {
+  public static void bankDemo(Session session) {
     Transaction transaction = session.beginTransaction();
 
     Bank bank = new Bank();
@@ -106,10 +106,9 @@ public class Application {
     session.save(bank);
 
     transaction.commit();
-
   }
 
-  public static void userAddressTest(Session session) {
+  public static void userAddressDemo(Session session) {
     Transaction transaction = session.beginTransaction();
 
     User user = new User();
@@ -136,7 +135,7 @@ public class Application {
     transaction.commit();
   }
 
-  public static void bankContactTest(Session session) {
+  public static void bankContactDemo(Session session) {
     Transaction transaction = session.beginTransaction();
 
     Bank bank = new Bank();
