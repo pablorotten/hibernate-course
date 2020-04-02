@@ -31,6 +31,11 @@ public class User {
   @Column(name = "EMAIL_ADDRESS")
   private String emailAddress;
 
+  @Embedded
+  @AttributeOverrides({@AttributeOverride(name="addressLine1", column=@Column(name="USER_ADDRESS_LINE_1")),
+          @AttributeOverride(name="addressLine2", column=@Column(name="USER_ADDRESS_LINE_2"))})
+  private Address address;
+
   @Column(name = "LAST_UPDATED_DATE")
   private Date lastUpdatedDate;
 
@@ -99,6 +104,14 @@ public class User {
 
   public void setEmailAddress(String emailAddress) {
     this.emailAddress = emailAddress;
+  }
+
+  public Address getAddress() {
+    return address;
+  }
+
+  public void setAddress(Address address) {
+    this.address = address;
   }
 
   public Date getLastUpdatedDate() {

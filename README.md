@@ -136,7 +136,7 @@ To deal with Date/Time types
 #### @Formula
 Used for calculated attributes on runtime
 
-### Hibernate Types
+## Hibernate Types
 
 * Entitiy Types: have a database identity
 * Vaue Types: no database identitiy
@@ -153,7 +153,7 @@ public class User {
   private String firstName; //Basic Value Type
   private User referredBy; //Entity Type
   private List<String> aliases; //Collection Value Type
-  private Address address; //Composite Value Type
+  private Address address; //Composite Value Type (Embedded in JPA)
 }
 
 public class Address { // Auxiliary class. Is not an entity, the values are stored in the User table
@@ -164,3 +164,53 @@ public class Address { // Auxiliary class. Is not an entity, the values are stor
   // ...
 }
 ```  
+
+
+### Mapping Composite Value Types
+
+There are 2 ways to do it, with an Auxiliary table or directly in the annotations
+
+####@Embeddable
+Create a composite value type class with the @Embeddable annotation:
+```java
+@Embeddable // Composite value type
+public class Address {
+
+	@Column(name="ADDRESS_LINE_1")
+	private String addressLine1;
+
+	@Column(name="ADDRESS_LINE_2")
+	private String addressLine2;
+	
+	@Column(name="CITY")
+	private String city;
+}
+```
+This class has the columns but is not an entity by itself. Is used by other entitites
+
+For using this Composite value type class there're 2 ways:
+
+If the @Column names of the CVT match with the column names of the Entity, you can directly use the class
+```java
+@Entity
+@Table(name="BANK")
+public class Bank {
+
+  //...
+	@Embedded // Composite value type. Annotation not needed, Hibernate figures out
+	private Address address = new Address();
+	//...
+```
+
+If not, you can still use the CVT setting in the annotations the column names:
+```java
+@Embedded
+@AttributeOverrides({
+   @AttributeOverride(name="addressLine1", column=@Column(name="USER_ADDRESS_LINE_1")),
+   @AttributeOverride(name="addressLine2", column=@Column(name="USER_ADDRESS_LINE_2"))})
+private Address address;
+```
+
+
+
+
