@@ -235,15 +235,19 @@ user.setAddress(address);
 ```
 ### Mapping Collections Of Basic Value Types
 
-#### @ElementCollection (One to Many)
+When you have a **One to Many** relationship in the database, you may map it as a Collection or as a Map
+
+#### @ElementCollection: Mapping a Collection 
 
 If you have a One to Many relationship for saving a Basic Value such as a String, Double, etc.
 You can use @ElementCollection to map it:
 
 One BANK has many BANK_CONTACTs so we have this relationship:
+
 ![](img/bank-bank_contact.png)
 
 in **BANK_CONTACT** we just want to save the name of the contact and the id of the bank
+
 ![](img/bank_contact.png)
 
 From the point of view of the Entity **Bank**, the **BANK_CONTACT** table is a Collection of Strings with the names of the contacts.
@@ -267,4 +271,22 @@ bank.getContacts().add("Mary");
 
 This will add to the **BANK_CONTACT** table 2 new entries.
 
+#### @MapKeyColumn: Mapping a Map
 
+If you have a One to Many relationship for saving a Map, is very similar as @ElementCollection.
+But you also have to map the key of the map using @MapKeyColumn
+
+```java
+	//Mapping a Map
+	@ElementCollection
+	@CollectionTable(name="BANK_CONTACT", joinColumns=@JoinColumn(name="BANK_ID"))
+	@MapKeyColumn(name="POSITION_TYPE") // Map the column for key of the Map
+	@Column(name="NAME")
+	private Map<String, String> contacts = new HashMap<String, String>();
+```
+
+And then put the contacts in the map
+```java
+bank.getContacts().put("MANAGER", "Joe");
+bank.getContacts().put("TELLER", "Mary");
+```

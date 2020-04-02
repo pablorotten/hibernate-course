@@ -1,8 +1,6 @@
 package com.infiniteskills.data.entities;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -38,10 +36,18 @@ public class Bank {
 	@Column(name="CREATED_BY")
 	private String createdBy;
 
-	@ElementCollection // Map a collection of instances
-	@CollectionTable(name = "BANK_CONTACT", joinColumns = @JoinColumn(name = "BANK_ID")) // Join the id of BANK with this column of BANK_CONTACT
-	@Column(name = "NAME") // Each String of the contacts collection is an entry in the NAME column
-	private Collection<String> contacts = new ArrayList<String>();
+	//Mapping a Collection
+//	@ElementCollection // Map a collection of instances
+//	@CollectionTable(name = "BANK_CONTACT", joinColumns = @JoinColumn(name = "BANK_ID")) // Join the id of BANK with this column of BANK_CONTACT
+//	@Column(name = "NAME") // Each String of the contacts collection is an entry in the NAME column
+//	private Collection<String> contacts = new ArrayList<String>();
+
+	//Mapping a Map
+	@ElementCollection
+	@CollectionTable(name="BANK_CONTACT", joinColumns=@JoinColumn(name="BANK_ID"))
+	@MapKeyColumn(name="POSITION_TYPE") // Map the column for key of the Map
+	@Column(name="NAME")
+	private Map<String, String> contacts = new HashMap<String, String>();
 
 	public Long getBankId() {
 		return bankId;
@@ -138,7 +144,9 @@ public class Bank {
 
 	public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
-	public Collection<String> getContacts() { return contacts; }
+//	public Collection<String> getContacts() { return contacts; }
+	public Map<String, String> getContacts() { return contacts; }
 
-	public void setContacts(Collection<String> contacts) { this.contacts = contacts; }
+//	public void setContacts(Collection<String> contacts) { this.contacts = contacts; }
+	public void setContacts(Map<String, String> contacts) { this.contacts = contacts; }
 }
