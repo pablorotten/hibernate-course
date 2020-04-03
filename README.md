@@ -241,16 +241,23 @@ When you have a **One to Many** relationship in the database, you may map it as 
 
 #### @ElementCollection: Mapping a Collection 
 
-If you have a One to Many relationship for saving a Basic Value such as a String, Double, etc.
-You can use @ElementCollection to map it:
+For "One to Many" relationships when we can represent the "Many" table as a collection of basic values such as String, Double, etc.
+For those 2 tables, we are going to have only 1 Entity that will be associated to both Tables at once and will persist them. 
+The Entity is going to be directly associated with the Table that hold the "One" cardinality in the relationship.
+
+The Entity's attribute that represents the relationship with the **Many** table with have those annotations:
+* @ElementCollection: This attribute is a collection of instances of another Table without Entity
+* @CollectionTable(name = "Many_table_name", joinColumns = @JoinColumn(name = "FK_column_name"): Specifies which is the "Many" table and the column with the FK
 
 One BANK has many BANK_CONTACTs so we have this relationship:
+```
++------+        +--------------+
+| BANK +-------<+ BANK_CONTACT |
++------+        +--------------+
+```
 
-![](img/bank-bank_contact.png)
-
-in **BANK_CONTACT** we just want to save the name of the contact and the id of the bank
-
-![](img/bank_contact.png)
+in **BANK_CONTACT** we just want to save the name of the contact.
+![](img/bank_contact-collection.png)
 
 From the point of view of the Entity **Bank**, the **BANK_CONTACT** table is a Collection of Strings with the names of the contacts.
 Can also be a List, Set...
@@ -275,8 +282,14 @@ This will add to the **BANK_CONTACT** table 2 new entries.
 
 #### @MapKeyColumn: Mapping a Map
 
-If you have a One to Many relationship for saving a Map, is very similar as @ElementCollection.
-But you also have to map the key of the map using @MapKeyColumn
+When we can represent the "Many" table a Map of simple values, is very similar as @ElementCollection.
+But you also have to map the key of the map using @MapKeyColumn(name = "KEY_COLUMN") where you have to specify which Column do you want yo use a Key of the Map.
+
+In this case, we also want to save the "POSITION_TYPE":
+
+![](img/bank_contact-map.png)
+
+From the point of view of the Entity **Bank**, we can map this Table in a Map, where the key is the "POSITION_TYPE" and the value is the "NAME"
 
 ```java
 //Mapping a Map
@@ -287,7 +300,7 @@ But you also have to map the key of the map using @MapKeyColumn
 private Map<String, String> contacts = new HashMap<String, String>();
 ```
 
-And then put the contacts in the map
+Add the contacts in the map:
 ```java
 bank.getContacts().put("MANAGER", "Joe");
 bank.getContacts().put("TELLER", "Mary");
@@ -312,7 +325,7 @@ USER_ADDRESS has one FINANCES_USER
 +---------------+        +--------------+
 ```
 
-Bef-or we were saving **Address** attributes in the **USER** table. Now **Address** has his own table. 
+Before we were saving **Address** attributes in the **USER** table. Now **Address** has his own table. 
 But still not an Entity, no life-cycle. Is User-dependant.
 
 So we need to do the same we did Mapping Composite Value Types mixed with Mapping a Collection:
@@ -328,11 +341,13 @@ private List<Address> address = new ArrayList<Address>();
 
 ## Entity Associations
 
+When whe have a relationship in the database, we have to identify where's the Foreign Key (FK).
+The Entity associated with the Table having the FK is the **Source** or **Owner**, the other Entity is the **Target**.
+                             
 ### Unidirectional One To One Association: @OneToOne(cascade)
 
-When whe have a relationship "One to One" in the database, we have to identify where's the Foreign Key (FK)
-The table with the FK is the **Source** or **Owner**, the other table is the **Target**. Same names for the corresponding Entities.
-In the Source, we have to use the `@OneToOne` annotation in the FK
+For relationship "One to One". 
+In the **Source**, we have to use the `@OneToOne` and the `@JoinColumn` annotations for the attribute where the FK is mapped.
 
 In this case, **CREDENTIAL** is the Source and **FINANCES_USER** the Target
 ```
@@ -345,7 +360,7 @@ FINANCES_USER has one USER_ADDRESS and viceversa
 ```
 
 The FK is mapped to the attribute **user**
-We add the annotation `@OneToOne(cascade=CascadeType.ALL)` to it. 
+We add the annotations `@OneToOne(cascade=CascadeType.ALL)` and `@JoinTable` to it. 
 The `cascade` property allows to Credential entity to, when we persist a Credential, persist also the associated User.
 ```java
 @Entity
@@ -358,8 +373,8 @@ public class Credential {
   //...
 }
 ```
-In this case, on both tables the Join Column name is "USER_ID". But if in the **Target** the column has a different name, 
-we can use `@JoinColumn(name="USER_ID", referencedColumnName = "TARGET_COL_NAME")` indicating to Hibernate which is the Join Column in the **Target**
+
+> In this case, on both tables the Join Column name is "USER_ID". But if in the **Target** the column has a different name, we can use `@JoinColumn(name="USER_ID", referencedColumnName = "TARGET_COL_NAME")` indicating to Hibernate which is the Join Column in the **Target**
 
 Usage:
 ```java
