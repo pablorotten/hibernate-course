@@ -1,11 +1,11 @@
 package com.infiniteskills.data;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
 import com.infiniteskills.data.entities.*;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class Application {
 
@@ -13,15 +13,18 @@ public class Application {
     Session session = HibernateUtil.getSessionFactory().openSession();
 
     try {
-//      timeDemo(session);
-//      userDemo(session);
-//      userAgeDemo(session);
-//      bankDemo(session);
-//      userAddressDemo(session);
-//      bankContactDemo(session);
-//      bankContactMapDemo(session);
-//      userAddressCollectionDemo(session);
-      CredentialUser(session);
+      org.hibernate.Transaction transaction = session.beginTransaction();
+
+//      timeDemo(session, transaction);
+//      userDemo(session, transaction);
+//      userAgeDemo(session, transaction);
+//      bankDemo(session, transaction);
+//      userAddressDemo(session, transaction);
+//      bankContactDemo(session, transaction);
+//      bankContactMapDemo(session, transaction);
+//      userAddressCollectionDemo(session, transaction);
+//      credentialUserDemo(session, transaction);
+      accountTransactionDemo(session, transaction);
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(0);
@@ -33,7 +36,8 @@ public class Application {
 
   }
 
-  public static void userDemo(Session session) {
+  // Basic Mapping Annotations
+  public static void userDemo(Session session, org.hibernate.Transaction transaction) {
     session.getTransaction().begin();
 
     User user = new User();
@@ -49,7 +53,7 @@ public class Application {
     session.save(user);
   }
 
-  public static void userAgeDemo(Session session) {
+  public static void userAgeDemo(Session session, org.hibernate.Transaction transaction) {
     session.getTransaction().begin();
 
     User user = new User();
@@ -78,7 +82,7 @@ public class Application {
     return calendar.getTime();
   }
 
-  public static void timeDemo(Session session){
+  public static void timeDemo(Session session, org.hibernate.Transaction transaction){
     session.getTransaction().begin();
     TimeTest test = new TimeTest(new Date());
     session.save(test);
@@ -87,9 +91,8 @@ public class Application {
     System.out.println(test.toString());
   }
 
-  public static void bankDemo(Session session) {
-    Transaction transaction = session.beginTransaction();
-
+  // Mapping Composite Value Types
+  public static void bankDemo(Session session, org.hibernate.Transaction transaction) {
     Bank bank = new Bank();
     bank.setName("Federal Trust");
     bank.setAddressLine1("33 Wall Street");
@@ -107,9 +110,7 @@ public class Application {
     transaction.commit();
   }
 
-  public static void userAddressDemo(Session session) {
-    Transaction transaction = session.beginTransaction();
-
+  public static void userAddressDemo(Session session, org.hibernate.Transaction transaction) {
     User user = new User();
     Address address = new Address();
     user.setAge(22);
@@ -134,9 +135,8 @@ public class Application {
     transaction.commit();
   }
 
-  public static void bankContactDemo(Session session) {
-    Transaction transaction = session.beginTransaction();
-
+  // Mapping Collections Of Basic Value Types: @ElementCollection (One to Many)
+  public static void bankContactDemo(Session session, org.hibernate.Transaction transaction) {
     Bank bank = new Bank();
     bank.setName("Federal Trust");
     bank.setAddressLine1("33 Wall Street");
@@ -156,9 +156,8 @@ public class Application {
     transaction.commit();
   }
 
-  public static void bankContactMapDemo(Session session) {
-    Transaction transaction = session.beginTransaction();
-
+  // Mapping Collections Of Basic Value Types: @MapKeyColumn: Mapping a Map
+  public static void bankContactMapDemo(Session session, org.hibernate.Transaction transaction) {
     Bank bank = new Bank();
     bank.setName("Federal Trust");
     bank.setAddressLine1("33 Wall Street");
@@ -178,9 +177,8 @@ public class Application {
     transaction.commit();
   }
 
-  public static void userAddressCollectionDemo(Session session) {
-    Transaction transaction = session.beginTransaction();
-
+  // Mapping A Collection Of Composite
+  public static void userAddressCollectionDemo(Session session, org.hibernate.Transaction transaction) {
     User user = new User();
 
     Address address = new Address();
@@ -223,9 +221,8 @@ public class Application {
     address.setZipCode("12345");
   }
 
-  public static void CredentialUser(Session session) {
-    Transaction transaction = session.beginTransaction();
-
+  // Unidirectional One To One Association: @OneToOne
+  public static void credentialUserDemo(Session session, org.hibernate.Transaction transaction) {
     User user = new User();
     user.setFirstName("Kevin");
     user.setLastName("Bowersox");
@@ -251,4 +248,60 @@ public class Application {
     User dbUser = (User) session.get(User.class, credential.getUser().getUserId());
     System.out.println(dbUser.getFirstName());
   }
+
+  // Unidirectional One To Many Association: @OneToMany
+
+  public static void accountTransactionDemo(Session session, org.hibernate.Transaction transaction) {
+    Account account = createNewAccount();
+    account.getTransactions().add(createNewBeltPurchase());
+    account.getTransactions().add(createShoePurchase());
+    session.save(account);
+
+    transaction.commit();
+  }
+
+  private static Transaction createNewBeltPurchase() {
+    Transaction beltPurchase = new Transaction();
+    beltPurchase.setTitle("Dress Belt");
+    beltPurchase.setAmount(new BigDecimal("50.00"));
+    beltPurchase.setClosingBalance(new BigDecimal("0.00"));
+    beltPurchase.setCreatedBy("Kevin Bowersox");
+    beltPurchase.setCreatedDate(new Date());
+    beltPurchase.setInitialBalance(new BigDecimal("0.00"));
+    beltPurchase.setLastUpdatedBy("Kevin Bowersox");
+    beltPurchase.setLastUpdatedDate(new Date());
+    beltPurchase.setNotes("New Dress Belt");
+    beltPurchase.setTransactionType("Debit");
+    return beltPurchase;
+  }
+
+  private static Transaction createShoePurchase() {
+    Transaction shoePurchase = new Transaction();
+    shoePurchase.setTitle("Work Shoes");
+    shoePurchase.setAmount(new BigDecimal("100.00"));
+    shoePurchase.setClosingBalance(new BigDecimal("0.00"));
+    shoePurchase.setCreatedBy("Kevin Bowersox");
+    shoePurchase.setCreatedDate(new Date());
+    shoePurchase.setInitialBalance(new BigDecimal("0.00"));
+    shoePurchase.setLastUpdatedBy("Kevin Bowersox");
+    shoePurchase.setLastUpdatedDate(new Date());
+    shoePurchase.setNotes("Nice Pair of Shoes");
+    shoePurchase.setTransactionType("Debit");
+    return shoePurchase;
+  }
+
+  private static Account createNewAccount() {
+    Account account = new Account();
+    account.setCloseDate(new Date());
+    account.setOpenDate(new Date());
+    account.setCreatedBy("Kevin Bowersox");
+    account.setInitialBalance(new BigDecimal("50.00"));
+    account.setName("Savings Account");
+    account.setCurrentBalance(new BigDecimal("100.00"));
+    account.setLastUpdatedBy("Kevin Bowersox");
+    account.setLastUpdatedDate(new Date());
+    account.setCreatedDate(new Date());
+    return account;
+  }
+
 }

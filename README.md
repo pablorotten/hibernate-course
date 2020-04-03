@@ -257,6 +257,7 @@ One BANK has many BANK_CONTACTs so we have this relationship:
 ```
 
 in **BANK_CONTACT** we just want to save the name of the contact.
+
 ![](img/bank_contact-collection.png)
 
 From the point of view of the Entity **Bank**, the **BANK_CONTACT** table is a Collection of Strings with the names of the contacts.
@@ -316,6 +317,11 @@ So we need a table for saving those Addresses in the DB. Is very similar to the 
 But **Address** is more complex than **BANK_CONTACT**, we can't save an **Address** in a String Collection or a Map like we did with **BANK_CONTACT**.
 We need a Collection of CVT **Address**:
 
+The Entity's attribute that represents the relationship with the **Many** table has those annotations:
+* @ElementCollection
+* @CollectionTable(name = "Many_table_name", joinColumns = @JoinColumn(name = "FK_column_name")
+* @AttributeOverrides: Same as with CVT
+
 ```
 FINANCES_USER has many USER_ADDRESS 
 USER_ADDRESS has one FINANCES_USER
@@ -343,11 +349,14 @@ private List<Address> address = new ArrayList<Address>();
 
 When whe have a relationship in the database, we have to identify where's the Foreign Key (FK).
 The Entity associated with the Table having the FK is the **Source** or **Owner**, the other Entity is the **Target**.
+In those cases, *both related Tables have associated Entities with life-cycle*
                              
 ### Unidirectional One To One Association: @OneToOne(cascade)
 
 For relationship "One to One". 
-In the **Source**, we have to use the `@OneToOne` and the `@JoinColumn` annotations for the attribute where the FK is mapped.
+Annotations for the **Source** Entity attribute where the FK is mapped:
+* @OneToOne(cascade=CascadeType.ALL): This Entity persists both entities
+* @JoinColumn(name="FK_column_name")
 
 In this case, **CREDENTIAL** is the Source and **FINANCES_USER** the Target
 ```
@@ -391,9 +400,12 @@ In this example we can only access to an **User** from a **Credential**, but not
 
 ### Bidirectional One To One Association: @OneToOne(mappedBy)
 
-Following the previous explanation of Unidirectional One To One, maybe we are also interested on letting the **Target** entity
-know who is his **Source** (or **Owner**). 
-For achieving that, we use the annotation `@OneToOne(mappedBy="Source_field")`. In the mappedBy specifies the field on the Owning entity that maps the relationship.
+Same as Unidirectional but also, annotations for the **Target** Entity attribute that represents the **Source** Entitiy:
+* @OneToOne(mappedBy="Source_attribute")
+
+Following the previous explanation of Unidirectional One To One, maybe we are also interested on letting the **Target** Entity
+know who is his **Source** (or **Owner**). For achieving that, we use the annotation `@OneToOne(mappedBy="Source_field")`. 
+`mappedBy` specifies the field on the Owning entity that maps the relationship.
 i.e. the attribute on the **Source** with the `@JoinColumn` annotation that references the current **Target** Entity.
 In the Target we **NEVER** use the annotations `@JoinColumn` or the property `cascade` 
 
@@ -411,4 +423,62 @@ user.setCredential(credential);
 session.save(credential);
 ```
 
-Now, both entities know each other. But don't forget that still, **Credential** is the responsible for persisting both entities.
+Now, both entities know each other. But don't forget that still **Credential** is the responsible for persisting both entities.
+
+### Unidirectional One To Many Association: @OneToMany
+
+For relationship "One to Many". 
+Annotations for the **Target** Entity attribute  that represent the **Source** where the FK is mapped:
+* @OneToMany(cascade=CascadeType.ALL): This Entity persists both entities
+* @JoinColumn(name="ACCOUNT_ID", nullable=false): 
+  * name="ACCOUNT_ID": This is the COLUMN NAME OF THE SOURCE TABLE THAT HAS THE FK. Yes, we are putting in the JoinColumn of the **Target** the Column name of the **Source**.
+  * nullable=false: Needed because yes
+  
+> ❗ This `nullable=false` is not well documented. Just an act of faith
+ 
+> ❗ THIS IS TERRIBLE!!!!: So for the one-to-one we put the annotations in the **Source**. But for the one-to-many we do other way around and put them in the **Target**!!!! 
+Why???!!!! We can also put the annotations in the **Source** and use @OneToMany(mappedBy="") for the collection in the **Target**. WHY???
+
+> ❗ In the unidirectional one-to-one makes sense that the **Target** doesn't know the **Source**, we are just mapping what we have in the DB. 
+The UNIDIRECTION goes from **Source** → **Target**. But for the unidirectional one-to-many they decide that the **Target** **MUST** know 
+the **Source**, the UNIDIRECTION is the OPPOSITE: **Target** → **Source** WHY???? Doesn't make sense!!!
+
+> Vale ya se, tiene sentido: Tenemos una relacion de UNO a MUCHOS. En este caso, si ponemos las anotaciones en el Source: MUCHOS, a la hora de guardar tendriamos que ir a cada
+UNO del MUCHOS que claro... **donde estarian?** cada UNO tendria que guardarse a si mismo? **Cual guardaria el UNO**
+
+> ❓ The target and source (owner) would stay like before or we have to switch them??? What is the RULE
+
+In this case, **TRANSACTION** is the Source and **ACOUNT** the Target. But remember that now is the opposite as seen before.
+Now is Account how knows the Transaction even if in the DB the FK is in the TRANSACTION Table
+```
+ACCOUNT has many TRANSACTION. TRANSACTION belongs to one ACCOUNT
+
+  TARGET              SOURCE
++--------+       +-------------+
+| ACCOUT +------<+ TRANSACTION |
++--------+       +-------------+
+```
+
+In this case, Account Entity holds the Relationship with Transactions Entities.
+We add the annotations `@OneToMany(cascade=CascadeType.ALL)` and `@JoinTable` to the field that maps the relationship: `transactions`. 
+Account will persist all the Transactions.
+```java
+@Entity
+@Table(name = "ACCOUNT")
+public class Account {
+  ...
+  @OneToMany(cascade=CascadeType.ALL)// Account will persist Transaction also
+  @JoinColumn(name="ACCOUNT_ID", nullable=false)// The column name of the TRANSACTION table where is the FK of ACCOUNT. Has to be nullabe=false
+  List<Transaction> transactions = new ArrayList();
+  ....
+```
+
+Usage:
+```java
+Account account = createNewAccount(); // Create the Account
+// Add transactions to the Account
+account.getTransactions().add(createNewBeltPurchase());
+account.getTransactions().add(createShoePurchase());
+// Save the Account and the Transactions
+session.save(account)
+```
