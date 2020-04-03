@@ -240,7 +240,10 @@ public class Application {
     Credential credential = new Credential();
     credential.setPassword("kevinspassword");
     credential.setUsername("kmb385");
+
+    // Don't forget to set both sides of the bidirectional relationship!!!
     credential.setUser(user);
+    user.setCredential(credential);
 
     session.save(credential);// Cascade will save the Credential and the User
     transaction.commit();

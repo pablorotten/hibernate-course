@@ -279,12 +279,12 @@ If you have a One to Many relationship for saving a Map, is very similar as @Ele
 But you also have to map the key of the map using @MapKeyColumn
 
 ```java
-	//Mapping a Map
-	@ElementCollection
-	@CollectionTable(name="BANK_CONTACT", joinColumns=@JoinColumn(name="BANK_ID"))
-	@MapKeyColumn(name="POSITION_TYPE") // Map the column for key of the Map
-	@Column(name="NAME")
-	private Map<String, String> contacts = new HashMap<String, String>();
+//Mapping a Map
+@ElementCollection
+@CollectionTable(name="BANK_CONTACT", joinColumns=@JoinColumn(name="BANK_ID"))
+@MapKeyColumn(name="POSITION_TYPE") // Map the column for key of the Map
+@Column(name="NAME")
+private Map<String, String> contacts = new HashMap<String, String>();
 ```
 
 And then put the contacts in the map
@@ -328,10 +328,10 @@ private List<Address> address = new ArrayList<Address>();
 
 ## Entity Associations
 
-### Unidirectional One To One Association: @OneToOne
+### Unidirectional One To One Association: @OneToOne(cascade)
 
 When whe have a relationship "One to One" in the database, we have to identify where's the Foreign Key (FK)
-The table with the FK is the **Source**, the other table is the **Target**.
+The table with the FK is the **Source** or **Owner**, the other table is the **Target**. Same names for the corresponding Entities.
 In the Source, we have to use the `@OneToOne` annotation in the FK
 
 In this case, **CREDENTIAL** is the Source and **FINANCES_USER** the Target
@@ -345,7 +345,7 @@ FINANCES_USER has one USER_ADDRESS and viceversa
 ```
 
 The FK is mapped to the attribute **user**
-We add the annotation `@@OneToOne(cascade=CascadeType.ALL)` to it. 
+We add the annotation `@OneToOne(cascade=CascadeType.ALL)` to it. 
 The `cascade` property allows to Credential entity to, when we persist a Credential, persist also the associated User.
 ```java
 @Entity
@@ -373,3 +373,27 @@ session.save(credential);// Cascade will save the Credential and the User
 ```
 
 In this example we can only access to an **User** from a **Credential**, but not the opposite. That's why is **unidirectional**
+
+### Bidirectional One To One Association: @OneToOne(mappedBy)
+
+Following the previous explanation of Unidirectional One To One, maybe we are also interested on letting the **Target** entity
+know who is his **Source** (or **Owner**). 
+For achieving that, we use the annotation `@OneToOne(mappedBy="Source_field")`. In the mappedBy specifies the field on the Owning entity that maps the relationship.
+i.e. the attribute on the **Source** with the `@JoinColumn` annotation that references the current **Target** Entity.
+In the Target we **NEVER** use the annotations `@JoinColumn` or the property `cascade` 
+
+In our case, the attribute `user` in the Source class Credential was mapping the relationship:
+```java
+@OneToOne(mappedBy="user")
+private Credential credential;
+```
+
+Don't forget to set both sides of the bidirectional relationship when we use it!!!
+```java
+credential.setUser(user);
+user.setCredential(credential);
+
+session.save(credential);
+```
+
+Now, both entities know each other. But don't forget that still, **Credential** is the responsible for persisting both entities.
