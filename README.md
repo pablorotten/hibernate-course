@@ -169,7 +169,9 @@ public class Address { // Auxiliary class. Is not an entity, the values are stor
 
 ### Mapping Composite Value Types
 
-Uses an auxiliary class to define the attributes of the entity 
+The Composite Value Type is an auxiliary class where are defined some attributes of the Entity.
+This class is not an Entity, **doesn't have table in the DB** thus doesnt have life-cycle.
+The attributes values will be mapped in the DB to Columns of the Entity that uses it.
 
 #### @Embeddable
 Create a Composite Value Type (CVT) class with the @Embeddable annotation:
@@ -187,7 +189,6 @@ public class Address {
 	private String city;
 }
 ```
-This class has the columns but is not an entity by itself. Is used by other entities such as **Bank**
 
 For using this Composite value type class there're 2 ways:
 
@@ -213,7 +214,7 @@ public class Bank {
 
 #### @Embedded + @AttributeOverrides
 
-If not, you can still use the CVT setting in the annotations the column names:
+If not, you can still use the CVT setting in the annotations to override the column names:
 ```java
 @Embedded
 @AttributeOverrides({
@@ -290,4 +291,34 @@ And then put the contacts in the map
 ```java
 bank.getContacts().put("MANAGER", "Joe");
 bank.getContacts().put("TELLER", "Mary");
+```
+
+### Mapping A Collection Of Composite
+
+With the @ElementCollection approach we can Map a Collection of Basic values (String, Double, ...).
+But what if we need to Map a Collection something more complex, a collection of CVTs?
+
+For example, we want to save a List of **Addresses** for an **User**.
+So we need a table for saving those Addresses in the DB. Is very similar to the case of the **BANK** and **BANK_CONTACT**.
+But **Address** is more complex than **BANK_CONTACT**, we can't save an **Address** in a String Collection or a Map like we did with **BANK_CONTACT**.
+We need a Collection of CVT **Address**:
+
+```
++--------+        +--------------+
+|  USER  +-------<+ USER_ADDRESS |
++--------+        +--------------+
+```
+
+Before we were saving **Address** attributes in the **USER** table. Now **Address** has his own table. 
+But still not an Entity, no life-cycle. Is User-dependant.
+
+So we need to do the same we did Mapping Composite Value Types mixed with Mapping a Collection:
+
+```java
+@ElementCollection
+@CollectionTable(name = "USER_ADDRESS", joinColumns = @JoinColumn(name = "USER_ID")) // Mapping a collection
+@AttributeOverrides({ //  Mapping Composite Value Types 
+        @AttributeOverride(name="addressLine1", column=@Column(name="USER_ADDRESS_LINE_1")),
+        @AttributeOverride(name="addressLine2", column=@Column(name="USER_ADDRESS_LINE_2"))})
+private List<Address> address = new ArrayList<Address>();
 ```

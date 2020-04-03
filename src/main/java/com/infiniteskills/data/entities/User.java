@@ -3,7 +3,9 @@ package com.infiniteskills.data.entities;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "FINANCES_USER")
@@ -31,10 +33,20 @@ public class User {
   @Column(name = "EMAIL_ADDRESS")
   private String emailAddress;
 
-  @Embedded
-  @AttributeOverrides({@AttributeOverride(name="addressLine1", column=@Column(name="USER_ADDRESS_LINE_1")),
+  // Address as a Composite Value Type >> Stored in USER table
+//  @Embedded
+//  @AttributeOverrides({
+//          @AttributeOverride(name="addressLine1", column=@Column(name="USER_ADDRESS_LINE_1")),
+//          @AttributeOverride(name="addressLine2", column=@Column(name="USER_ADDRESS_LINE_2"))})
+//  private Address address;
+
+  // Address as a Collection of CVT >> Stored in USER_ADDRESS table
+  @ElementCollection
+  @CollectionTable(name = "USER_ADDRESS", joinColumns = @JoinColumn(name = "USER_ID")) // Mapping a collection
+  @AttributeOverrides({ //  Mapping Composite Value Types
+          @AttributeOverride(name="addressLine1", column=@Column(name="USER_ADDRESS_LINE_1")),
           @AttributeOverride(name="addressLine2", column=@Column(name="USER_ADDRESS_LINE_2"))})
-  private Address address;
+  private List<Address> address = new ArrayList<Address>();
 
   @Column(name = "LAST_UPDATED_DATE")
   private Date lastUpdatedDate;
@@ -90,9 +102,7 @@ public class User {
     this.lastName = lastName;
   }
 
-  public Date getBirthDate() {
-    return birthDate;
-  }
+  public Date getBirthDate() { return birthDate; }
 
   public void setBirthDate(Date birthDate) {
     this.birthDate = birthDate;
@@ -102,15 +112,19 @@ public class User {
     return emailAddress;
   }
 
-  public void setEmailAddress(String emailAddress) {
-    this.emailAddress = emailAddress;
-  }
+  public void setEmailAddress(String emailAddress) { this.emailAddress = emailAddress; }
 
-  public Address getAddress() {
+  // Address as a Composite Value Type
+//  public Address getAddress() { return address; }
+//
+//  public void setAddress(Address address) { this.address = address; }
+
+  // Address as a Collection of CVT
+  public List<Address> getAddress() {
     return address;
   }
 
-  public void setAddress(Address address) {
+  public void setAddress(List<Address> address) {
     this.address = address;
   }
 
