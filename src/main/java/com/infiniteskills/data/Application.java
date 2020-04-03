@@ -3,11 +3,8 @@ package com.infiniteskills.data;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.infiniteskills.data.entities.Address;
-import com.infiniteskills.data.entities.Bank;
-import com.infiniteskills.data.entities.TimeTest;
+import com.infiniteskills.data.entities.*;
 import org.hibernate.Session;
-import com.infiniteskills.data.entities.User;
 import org.hibernate.Transaction;
 
 public class Application {
@@ -23,7 +20,8 @@ public class Application {
 //      userAddressDemo(session);
 //      bankContactDemo(session);
 //      bankContactMapDemo(session);
-      userAddressCollectionDemo(session);
+//      userAddressCollectionDemo(session);
+      CredentialUser(session);
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(0);
@@ -223,5 +221,31 @@ public class Application {
     address.setCity("Corning");
     address.setState("NY");
     address.setZipCode("12345");
+  }
+
+  public static void CredentialUser(Session session) {
+    Transaction transaction = session.beginTransaction();
+
+    User user = new User();
+    user.setFirstName("Kevin");
+    user.setLastName("Bowersox");
+    user.setAge(20);
+    user.setBirthDate(new Date());
+    user.setCreatedBy("Kevin Bowersox");
+    user.setCreatedDate(new Date());
+    user.setEmailAddress("kevin.bowersox@navy.mil");
+    user.setLastUpdatedDate(new Date());
+    user.setLastUpdatedBy("Kevin Bowersox");
+
+    Credential credential = new Credential();
+    credential.setPassword("kevinspassword");
+    credential.setUsername("kmb385");
+    credential.setUser(user);
+
+    session.save(credential);// Cascade will save the Credential and the User
+    transaction.commit();
+
+    User dbUser = (User) session.get(User.class, credential.getUser().getUserId());
+    System.out.println(dbUser.getFirstName());
   }
 }

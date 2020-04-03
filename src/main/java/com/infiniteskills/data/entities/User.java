@@ -20,6 +20,9 @@ public class User {
   @Column(name = "USER_ID")
   private Long userId;
 
+//  @OneToOne(mappedBy="user")
+//  private Credential credential;
+
   @Column(name = "FIRST_NAME")
   private String firstName;
 
@@ -159,4 +162,8 @@ public class User {
   public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
   }
+
+//  public Credential getCredential() { return credential; }
+
+//  public void setCredential(Credential credential) { this.credential = credential; }
 }

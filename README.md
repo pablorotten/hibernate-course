@@ -304,12 +304,15 @@ But **Address** is more complex than **BANK_CONTACT**, we can't save an **Addres
 We need a Collection of CVT **Address**:
 
 ```
-+--------+        +--------------+
-|  USER  +-------<+ USER_ADDRESS |
-+--------+        +--------------+
+FINANCES_USER has many USER_ADDRESS 
+USER_ADDRESS has one FINANCES_USER
+
++---------------+        +--------------+
+| FINANCES_USER +-------<+ USER_ADDRESS |
++---------------+        +--------------+
 ```
 
-Before we were saving **Address** attributes in the **USER** table. Now **Address** has his own table. 
+Bef-or we were saving **Address** attributes in the **USER** table. Now **Address** has his own table. 
 But still not an Entity, no life-cycle. Is User-dependant.
 
 So we need to do the same we did Mapping Composite Value Types mixed with Mapping a Collection:
@@ -322,3 +325,51 @@ So we need to do the same we did Mapping Composite Value Types mixed with Mappin
         @AttributeOverride(name="addressLine2", column=@Column(name="USER_ADDRESS_LINE_2"))})
 private List<Address> address = new ArrayList<Address>();
 ```
+
+## Entity Associations
+
+### Unidirectional One To One Association: @OneToOne
+
+When whe have a relationship "One to One" in the database, we have to identify where's the Foreign Key (FK)
+The table with the FK is the **Source**, the other table is the **Target**.
+In the Source, we have to use the `@OneToOne` annotation in the FK
+
+In this case, **CREDENTIAL** is the Source and **FINANCES_USER** the Target
+```
+FINANCES_USER has one USER_ADDRESS and viceversa
+
+     TARGET                 SOURCE
++---------------+       +------------+
+| FINANCES_USER +-------+ CREDENTIAL |
++---------------+       +------------+
+```
+
+The FK is mapped to the attribute **user**
+We add the annotation `@@OneToOne(cascade=CascadeType.ALL)` to it. 
+The `cascade` property allows to Credential entity to, when we persist a Credential, persist also the associated User.
+```java
+@Entity
+@Table(name="CREDENTIAL")
+public class Credential {
+  
+  @OneToOne(cascade=CascadeType.ALL)// Allows to persist an User from this Credential
+  @JoinColumn(name="USER_ID")// The foreign key column. The one that should be used to join the tables
+  public User user;
+  //...
+}
+```
+In this case, on both tables the Join Column name is "USER_ID". But if in the **Target** the column has a different name, 
+we can use `@JoinColumn(name="USER_ID", referencedColumnName = "TARGET_COL_NAME")` indicating to Hibernate which is the Join Column in the **Target**
+
+Usage:
+```java
+User user = new User();
+...
+Credential credential = new Credential();
+...
+credential.setUser(user);
+
+session.save(credential);// Cascade will save the Credential and the User
+```
+
+In this example we can only access to an **User** from a **Credential**, but not the opposite. That's why is **unidirectional**
