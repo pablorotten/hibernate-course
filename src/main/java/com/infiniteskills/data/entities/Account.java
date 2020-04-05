@@ -24,10 +24,10 @@ public class Account {
 	@Column(name = "ACCOUNT_ID")
 	private Long accountId;
 
-	@OneToMany(cascade=CascadeType.ALL)// Account will persist Transaction also
-	@JoinColumn(name="ACCOUNT_ID", nullable=false)// The column name of the TRANSACTION table where is the FK of ACCOUNT. Has to be nullabe=false
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="account")// Mapped by account in Transaction
+//	@JoinColumn(name="ACCOUNT_ID", nullable=false)// The column name of the TRANSACTION table where is the FK of ACCOUNT. Has to be nullabe=false. Remove if it becomes a bidirectional relationship!!!
 	List<Transaction> transactions = new ArrayList();
-	
+
 	@Column(name = "NAME")
 	private String name;
 
@@ -143,5 +143,5 @@ public class Account {
 		this.transactions = transactions;
 	}
 
-	
+
 }

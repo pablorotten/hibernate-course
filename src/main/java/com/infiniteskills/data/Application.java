@@ -24,7 +24,8 @@ public class Application {
 //      bankContactMapDemo(session, transaction);
 //      userAddressCollectionDemo(session, transaction);
 //      credentialUserDemo(session, transaction);
-      accountTransactionDemo(session, transaction);
+//      accountTransactionUnidirectionalDemo(session, transaction);
+      accountTransactionBidirectionalDemo(session, transaction);
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(0);
@@ -251,7 +252,7 @@ public class Application {
 
   // Unidirectional One To Many Association: @OneToMany
 
-  public static void accountTransactionDemo(Session session, org.hibernate.Transaction transaction) {
+  public static void accountTransactionUnidirectionalDemo(Session session, org.hibernate.Transaction transaction) {
     Account account = createNewAccount();
     account.getTransactions().add(createNewBeltPurchase());
     account.getTransactions().add(createShoePurchase());
@@ -304,4 +305,49 @@ public class Application {
     return account;
   }
 
+  // Bidirectional One To Many Association: @OneToMany
+
+  public static void accountTransactionBidirectionalDemo(Session session, org.hibernate.Transaction transaction) {
+    Account account = createNewAccount();
+    account.getTransactions().add(createNewBeltPurchase(account));// add Transaction to Account and viceversa
+    account.getTransactions().add(createShoePurchase(account));
+    session.save(account);
+
+    transaction.commit();
+
+    Transaction dbTransaction = (Transaction)session.get(Transaction.class, account.getTransactions().get(0).getTransactionId());
+    System.out.println(dbTransaction.getAccount().getName());
+  }
+
+  private static Transaction createNewBeltPurchase(Account account) {
+    Transaction beltPurchase = new Transaction();
+    beltPurchase.setAccount(account);
+    beltPurchase.setTitle("Dress Belt");
+    beltPurchase.setAmount(new BigDecimal("50.00"));
+    beltPurchase.setClosingBalance(new BigDecimal("0.00"));
+    beltPurchase.setCreatedBy("Kevin Bowersox");
+    beltPurchase.setCreatedDate(new Date());
+    beltPurchase.setInitialBalance(new BigDecimal("0.00"));
+    beltPurchase.setLastUpdatedBy("Kevin Bowersox");
+    beltPurchase.setLastUpdatedDate(new Date());
+    beltPurchase.setNotes("New Dress Belt");
+    beltPurchase.setTransactionType("Debit");
+    return beltPurchase;
+  }
+
+  private static Transaction createShoePurchase(Account account) {
+    Transaction shoePurchase = new Transaction();
+    shoePurchase.setAccount(account);
+    shoePurchase.setTitle("Work Shoes");
+    shoePurchase.setAmount(new BigDecimal("100.00"));
+    shoePurchase.setClosingBalance(new BigDecimal("0.00"));
+    shoePurchase.setCreatedBy("Kevin Bowersox");
+    shoePurchase.setCreatedDate(new Date());
+    shoePurchase.setInitialBalance(new BigDecimal("0.00"));
+    shoePurchase.setLastUpdatedBy("Kevin Bowersox");
+    shoePurchase.setLastUpdatedDate(new Date());
+    shoePurchase.setNotes("Nice Pair of Shoes");
+    shoePurchase.setTransactionType("Debit");
+    return shoePurchase;
+  }
 }

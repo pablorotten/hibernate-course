@@ -3,12 +3,7 @@ package com.infiniteskills.data.entities;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "TRANSACTION")
@@ -18,6 +13,10 @@ public class Transaction {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "TRANSACTION_ID")
 	private Long transactionId;
+
+	@ManyToOne
+	@JoinColumn(name="ACCOUNT_ID")// The column name of the TRANSACTION table where is the FK of ACCOUNT.
+	private Account account;
 
 	@Column(name = "TRANSACTION_TYPE")
 	private String transactionType;
@@ -53,25 +52,19 @@ public class Transaction {
 		return transactionId;
 	}
 
-	public void setTransactionId(Long transactionId) {
-		this.transactionId = transactionId;
-	}
+	public void setTransactionId(Long transactionId) { this.transactionId = transactionId; }
 
-	public String getTransactionType() {
-		return transactionType;
-	}
+	public Account getAccount() { return account; }
 
-	public void setTransactionType(String transactionType) {
-		this.transactionType = transactionType;
-	}
+	public void setAccount(Account account) { this.account = account; }
 
-	public String getTitle() {
-		return title;
-	}
+	public String getTransactionType() { return transactionType; }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+	public void setTransactionType(String transactionType) { this.transactionType = transactionType; }
+
+	public String getTitle() { return title; }
+
+	public void setTitle(String title) { this.title = title; }
 
 	public BigDecimal getAmount() {
 		return amount;

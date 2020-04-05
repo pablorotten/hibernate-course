@@ -349,6 +349,7 @@ private List<Address> address = new ArrayList<Address>();
 
 When whe have a relationship in the database, we have to identify where's the Foreign Key (FK).
 The Entity associated with the Table having the FK is the **Source** or **Owner**, the other Entity is the **Target**.
+The **Source** is always in the **many** part of the relationship. So you can read: Many **Sources** has one **Target** 
 In those cases, *both related Tables have associated Entities with life-cycle*
                              
 ### Unidirectional One To One Association: @OneToOne(cascade)
@@ -383,7 +384,8 @@ public class Credential {
 }
 ```
 
-> In this case, on both tables the Join Column name is "USER_ID". But if in the **Target** the column has a different name, we can use `@JoinColumn(name="USER_ID", referencedColumnName = "TARGET_COL_NAME")` indicating to Hibernate which is the Join Column in the **Target**
+> In this case, on both tables the Join Column name is "USER_ID". But if in the **Target** the column has a different name, 
+we can use `@JoinColumn(name="USER_ID", referencedColumnName = "TARGET_COL_NAME")` indicating to Hibernate which is the Join Column in the **Target**
 
 Usage:
 ```java
@@ -409,13 +411,16 @@ know who is his **Source** (or **Owner**). For achieving that, we use the annota
 i.e. the attribute on the **Source** with the `@JoinColumn` annotation that references the current **Target** Entity.
 In the Target we **NEVER** use the annotations `@JoinColumn` or the property `cascade` 
 
+Don't forget to set both sides of the bidirectional relationship when we use it!!!
+
 In our case, the attribute `user` in the Source class Credential was mapping the relationship:
 ```java
 @OneToOne(mappedBy="user")
 private Credential credential;
 ```
 
-Don't forget to set both sides of the bidirectional relationship when we use it!!!
+And then we set in both places the reationship: Set User in Credential and Credential in User
+
 ```java
 credential.setUser(user);
 user.setCredential(credential);
@@ -430,7 +435,7 @@ Now, both entities know each other. But don't forget that still **Credential** i
 For relationship "One to Many". 
 Annotations for the **Target** Entity attribute  that represent the **Source** where the FK is mapped:
 * @OneToMany(cascade=CascadeType.ALL): This Entity persists both entities
-* @JoinColumn(name="ACCOUNT_ID", nullable=false): 
+* @JoinColumn(name="FK_column_name", nullable=false): 
   * name="ACCOUNT_ID": This is the COLUMN NAME OF THE SOURCE TABLE THAT HAS THE FK. Yes, we are putting in the JoinColumn of the **Target** the Column name of the **Source**.
   * nullable=false: Needed because yes
   
@@ -481,4 +486,49 @@ account.getTransactions().add(createNewBeltPurchase());
 account.getTransactions().add(createShoePurchase());
 // Save the Account and the Transactions
 session.save(account)
+```
+
+### Bidirectional One To Many Association: @OneToMany & @ManyToOne
+
+**Source** Annotations:
+*	@ManyToOne: Many Sources to One Target
+*	@JoinColumn(name="FK_column_name")
+
+**Target** Annotations:
+* @OneToMany(cascade=CascadeType.ALL, mappedBy="Source_attribute"): mappedBy Source attribute that maps the relationship
+* ❗❗❗ REMOVE: @JoinColumn annotation!
+
+> ❗ The guy forgets to say that you have to remove the @JoinColumn in the Target and add + in the @OneToMany!!!
+
+Don't forget to set both sides of the bidirectional relationship when we use it.
+
+> ❗ If you don't set in both places will have an exception which, in words of the guy, is common and difficult to debug: AWFUL
+
+```java
+@Entity
+@Table(name = "TRANSACTION")
+public class Transaction {
+  ...
+	@ManyToOne
+	@JoinColumn(name="ACCOUNT_ID")// The column name of the TRANSACTION table where is the FK of ACCOUNT.
+	private Account account;
+  ...
+}
+
+@Entity
+@Table(name = "ACCOUNT")
+public class Account {
+  ...
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="account")// Mapped by account in Transaction
+//	@JoinColumn(name="ACCOUNT_ID", nullable=false)// Remove
+	List<Transaction> transactions = new ArrayList();
+  ....
+```
+
+Usage:
+```java
+Account account = createNewAccount();
+account.getTransactions().add(createNewBeltPurchase(account));// add Transaction to Account and viceversa
+account.getTransactions().add(createShoePurchase(account));
+session.save(account);
 ```
