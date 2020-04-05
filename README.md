@@ -498,7 +498,7 @@ session.save(account)
 * @OneToMany(cascade=CascadeType.ALL, mappedBy="Source_attribute"): mappedBy Source attribute that maps the relationship
 * ❗❗❗ REMOVE: @JoinColumn annotation!
 
-> ❗ The guy forgets to say that you have to remove the @JoinColumn in the Target and add + in the @OneToMany!!!
+> ❗ The guy forgets to say that you have to remove the @JoinColumn in the Target and add mappedBy="account" in the @OneToMany!!!
 
 Don't forget to set both sides of the bidirectional relationship when we use it.
 
