@@ -476,7 +476,7 @@ public class Account {
   @OneToMany(cascade=CascadeType.ALL)// Account will persist Transaction also
   @JoinColumn(name="ACCOUNT_ID", nullable=false)// The column name of the TRANSACTION table where is the FK of ACCOUNT. Has to be nullabe=false
   List<Transaction> transactions = new ArrayList();
-  ....
+  ...
 ```
 
 Usage:
@@ -512,9 +512,9 @@ Don't forget to set both sides of the bidirectional relationship when we use it.
 @Table(name = "TRANSACTION")
 public class Transaction {
   ...
-	@ManyToOne
-	@JoinColumn(name="ACCOUNT_ID")// The column name of the TRANSACTION table where is the FK of ACCOUNT.
-	private Account account;
+  @ManyToOne
+  @JoinColumn(name="ACCOUNT_ID")// The column name of the TRANSACTION table where is the FK of ACCOUNT.
+  private Account account;
   ...
 }
 
@@ -522,9 +522,9 @@ public class Transaction {
 @Table(name = "ACCOUNT")
 public class Account {
   ...
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="account")// Mapped by account in Transaction
-//	@JoinColumn(name="ACCOUNT_ID", nullable=false)// Remove
-	List<Transaction> transactions = new ArrayList();
+  @OneToMany(cascade=CascadeType.ALL, mappedBy="account")// Mapped by account in Transaction
+//  @JoinColumn(name="ACCOUNT_ID", nullable=false)// Remove
+  List<Transaction> transactions = new ArrayList();
   ....
 ```
 
@@ -552,11 +552,12 @@ by A, the **Source**
 *	@JoinTable(
     name="JOIN_TABLE_NAME", 
     joinColumns=@JoinColumn(name="JOIN_TABLE_COLUMN_NAME_OF_SOURCE_FK"), 
-		inverseJoinColumns=@JoinColumn(name="JOIN_TABLE_COLUMN_NAME_OF_TARGET_FK"))
+    inverseJoinColumns=@JoinColumn(name="JOIN_TABLE_COLUMN_NAME_OF_TARGET_FK"))
 
 > ❓ Why now the *Source* is A, the Entity in the *one* side of the relationship?? The Source indeed is the Join Table;
 But ignoring the JoinTable, we could map this relationship without the it, and then the FK of A would be in B and for
  sure B would be the *Source*. But if we put a JoinTable then we switch the *Source* and the *Target* with no explanation. 
+ 
 > ❓ And again the question: What is the rule for being Source or Target?
 
 **Target** Annotations. Now the Source is the *Many* part of the relationship, B:
@@ -566,6 +567,7 @@ But ignoring the JoinTable, we could map this relationship without the it, and t
 In our example, we have this:
 ```
 BUDGET has many TRANSACTIONs; But TRANSACTION may BELONG to One or Zero BUDGETs
+
   SOURCE(Why?)                                    TARGET
 +--------+       +--------------------+       +-------------+
 | BUDGET +------<+ BUDGET_TRANSACTION |-------+ TRANSACTION |
@@ -577,12 +579,12 @@ BUDGET has many TRANSACTIONs; But TRANSACTION may BELONG to One or Zero BUDGETs
 @Table(name = "BUDGET")
 public class Budget {
   ...
-	@OneToMany(cascade=CascadeType.ALL)
-	@JoinTable(
+  @OneToMany(cascade=CascadeType.ALL)
+  @JoinTable(
     name="BUDGET_TRANSACTION",
     joinColumns=@JoinColumn(name="BUDGET_ID"),
     inverseJoinColumns=@JoinColumn(name="TRANSACTION_ID"))
-	private List<Transaction> transactions = new ArrayList<>();
+  private List<Transaction> transactions = new ArrayList<>();
   ...
 }
 
@@ -590,9 +592,9 @@ public class Budget {
 @Table(name = "TRANSACTION")
 public class Transaction {
   ...
-	@ManyToOne(cascade = CascadeType.ALL)// Part of a @JoinTable relationship
-	@JoinColumn(name="ACCOUNT_ID")// The column name of the TRANSACTION table where is the FK of ACCOUNT.
-	private Account account;
+  @ManyToOne(cascade = CascadeType.ALL)// Part of a @JoinTable relationship
+  @JoinColumn(name="ACCOUNT_ID")// The column name of the TRANSACTION table where is the FK of ACCOUNT.
+  private Account account;
   ...
 }
 ```
