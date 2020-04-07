@@ -349,7 +349,7 @@ private List<Address> address = new ArrayList<Address>();
 
 When whe have a relationship in the database, we have to identify where's the Foreign Key (FK).
 The Entity associated with the Table having the FK is the **Source** or **Owner**, the other Entity is the **Target**.
-The **Source** is always in the **many** part of the relationship. So you can read: Many **Sources** has one **Target** 
+The **Source** is always in the **many** part of the relationship. So you can read: Many **Sources** are related to one **Target** 
 In those cases, *both related Tables have associated Entities with life-cycle*
                              
 ### Unidirectional One To One Association: @OneToOne(cascade)
@@ -432,7 +432,8 @@ Now, both entities know each other. But don't forget that still **Credential** i
 
 ### Unidirectional One To Many Association: @OneToMany
 
-For relationship "One to Many". 
+"One to Many" relationship where only the *One* entity knows the *Many* entity. 
+
 Annotations for the **Target** Entity attribute  that represent the **Source** where the FK is mapped:
 * @OneToMany(cascade=CascadeType.ALL): This Entity persists both entities
 * @JoinColumn(name="FK_column_name", nullable=false): 
@@ -451,7 +452,7 @@ the **Source**, the UNIDIRECTION is the OPPOSITE: **Target** → **Source** WHY?
 > Vale ya se, tiene sentido: Tenemos una relacion de UNO a MUCHOS. En este caso, si ponemos las anotaciones en el Source: MUCHOS, a la hora de guardar tendriamos que ir a cada
 UNO del MUCHOS que claro... **donde estarian?** cada UNO tendria que guardarse a si mismo? **Cual guardaria el UNO**
 
-> ❓ The target and source (owner) would stay like before or we have to switch them??? What is the RULE
+> ❓ Now, who is the *Source* and who is the *Target*??? What is the RULE???
 
 In this case, **TRANSACTION** is the Source and **ACOUNT** the Target. But remember that now is the opposite as seen before.
 Now is Account how knows the Transaction even if in the DB the FK is in the TRANSACTION Table
@@ -489,6 +490,8 @@ session.save(account)
 ```
 
 ### Bidirectional One To Many Association: @OneToMany & @ManyToOne
+
+"One to Many" relationship where both entities know each other. 
 
 **Source** Annotations:
 *	@ManyToOne: Many Sources to One Target
@@ -531,4 +534,76 @@ Account account = createNewAccount();
 account.getTransactions().add(createNewBeltPurchase(account));// add Transaction to Account and viceversa
 account.getTransactions().add(createShoePurchase(account));
 session.save(account);
+```
+
+### Optional One to Many Association using Junction Table: @JoinTable
+
+*Optional One to Many* relationship where not always the *Many* table belongs to the *One*.
+
+A is related to *many* B but B is related to *0 or 1* A. So we use the JoinTable AB for model this relationship:
+* A is related to *many* AB; AB is related to *1* A
+* B is related to *0 or 1* AB; AB is related to *1* B
+
+Follows a similar logic to the previous *Unidirectional @OneToMany*. The AB JoinTable table is not an entity. Is mapped
+by A, the **Source**
+
+**Source** Annotations. Now the Source is the *One* part of the relationship, A:
+* @OneToMany(cascade=CascadeType.ALL)
+*	@JoinTable(
+    name="JOIN_TABLE_NAME", 
+    joinColumns=@JoinColumn(name="JOIN_TABLE_COLUMN_NAME_OF_SOURCE_FK"), 
+		inverseJoinColumns=@JoinColumn(name="JOIN_TABLE_COLUMN_NAME_OF_TARGET_FK"))
+
+> ❓ Why now the *Source* is A, the Entity in the *one* side of the relationship?? The Source indeed is the Join Table;
+But ignoring the JoinTable, we could map this relationship without the it, and then the FK of A would be in B and for
+ sure B would be the *Source*. But if we put a JoinTable then we switch the *Source* and the *Target* with no explanation. 
+> ❓ And again the question: What is the rule for being Source or Target?
+
+**Target** Annotations. Now the Source is the *Many* part of the relationship, B:
+*	@ManyToOne(cascade = CascadeType.ALL)// Part of a @JoinTable relationship
+*	@JoinColumn(name="ACCOUNT_ID")// The column name of the TRANSACTION table where is the FK of ACCOUNT.
+
+In our example, we have this:
+```
+BUDGET has many TRANSACTIONs; But TRANSACTION may BELONG to One or Zero BUDGETs
+  SOURCE(Why?)                                    TARGET
++--------+       +--------------------+       +-------------+
+| BUDGET +------<+ BUDGET_TRANSACTION |-------+ TRANSACTION |
++--------+       +--------------------+       +-------------+
+```
+
+```java
+@Entity
+@Table(name = "BUDGET")
+public class Budget {
+  ...
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinTable(
+    name="BUDGET_TRANSACTION",
+    joinColumns=@JoinColumn(name="BUDGET_ID"),
+    inverseJoinColumns=@JoinColumn(name="TRANSACTION_ID"))
+	private List<Transaction> transactions = new ArrayList<>();
+  ...
+}
+
+@Entity
+@Table(name = "TRANSACTION")
+public class Transaction {
+  ...
+	@ManyToOne(cascade = CascadeType.ALL)// Part of a @JoinTable relationship
+	@JoinColumn(name="ACCOUNT_ID")// The column name of the TRANSACTION table where is the FK of ACCOUNT.
+	private Account account;
+  ...
+}
+```
+
+Now, we can optionally add Transactions to a Budget, and the Budget will persist everything:
+```java
+Account account = createNewAccount();
+Budget budget = new Budget();
+...
+budget.getTransactions().add(createNewBeltPurchase(account));
+budget.getTransactions().add(createShoePurchase(account));
+
+session.save(budget);;
 ```

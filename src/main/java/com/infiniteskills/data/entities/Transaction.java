@@ -14,7 +14,7 @@ public class Transaction {
 	@Column(name = "TRANSACTION_ID")
 	private Long transactionId;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)// Part of a @JoinTable relationship
 	@JoinColumn(name="ACCOUNT_ID")// The column name of the TRANSACTION table where is the FK of ACCOUNT.
 	private Account account;
 

@@ -25,11 +25,12 @@ public class Application {
 //      userAddressCollectionDemo(session, transaction);
 //      credentialUserDemo(session, transaction);
 //      accountTransactionUnidirectionalDemo(session, transaction);
-      accountTransactionBidirectionalDemo(session, transaction);
+//      accountTransactionBidirectionalDemo(session, transaction);
+      budgetTransactionsJoinTableDemo(session, transaction);
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(0);
-    }finally{
+    } finally {
       session.close();
       HibernateUtil.getSessionFactory().close();
       System.exit(0);
@@ -83,7 +84,7 @@ public class Application {
     return calendar.getTime();
   }
 
-  public static void timeDemo(Session session, org.hibernate.Transaction transaction){
+  public static void timeDemo(Session session, org.hibernate.Transaction transaction) {
     session.getTransaction().begin();
     TimeTest test = new TimeTest(new Date());
     session.save(test);
@@ -315,7 +316,7 @@ public class Application {
 
     transaction.commit();
 
-    Transaction dbTransaction = (Transaction)session.get(Transaction.class, account.getTransactions().get(0).getTransactionId());
+    Transaction dbTransaction = (Transaction) session.get(Transaction.class, account.getTransactions().get(0).getTransactionId());
     System.out.println(dbTransaction.getAccount().getName());
   }
 
@@ -349,5 +350,22 @@ public class Application {
     shoePurchase.setNotes("Nice Pair of Shoes");
     shoePurchase.setTransactionType("Debit");
     return shoePurchase;
+  }
+
+  // One to Many Association using Junction Table: @JoinTable
+
+  public static void budgetTransactionsJoinTableDemo(Session session, org.hibernate.Transaction transaction) {
+    Account account = createNewAccount();
+
+    Budget budget = new Budget();
+    budget.setGoalAmount(new BigDecimal("10000.00"));
+    budget.setName("Emergency Fund");
+    budget.setPeriod("Yearly");
+
+    budget.getTransactions().add(createNewBeltPurchase(account));
+    budget.getTransactions().add(createShoePurchase(account));
+
+    session.save(budget);
+    transaction.commit();
   }
 }
