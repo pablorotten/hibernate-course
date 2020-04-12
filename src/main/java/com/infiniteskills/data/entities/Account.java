@@ -19,7 +19,7 @@ public class Account {
 					name="USER_ACCOUNT",// Join table name
 					joinColumns=@JoinColumn(name="ACCOUNT_ID"),// Join table Source Entity Column
 					inverseJoinColumns=@JoinColumn(name="USER_ID"))// Join table Target Entity Column
-	private Set<User> users = new HashSet<>();// Collection of Targets Entities
+	private Set<User> users = new HashSet<>();// Collection of Target Entities
 
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="account")// Mapped by account in Transaction
 //	@JoinColumn(name="ACCOUNT_ID", nullable=false)// The column name of the TRANSACTION table where is the FK of ACCOUNT. Has to be nullabe=false. Remove if it becomes a bidirectional relationship!!!

@@ -632,18 +632,25 @@ Example:
 ```
 FINANCES_USER has Many ACCOUNTS and viceversa via USER_ACCOUNT
 
+      TARGET               JOIN TABLE            SOURCE
 +---------------+       +--------------+       +---------+
 | FINANCES_USER +------<+ USER_ACCOUNT |>------+ ACCOUNT |
 +---------------+       +--------------+       +---------+
 ```
 
 ```java
-@ManyToMany(cascade=CascadeType.ALL)
-@JoinTable(
-  name="USER_ACCOUNT",// Join table name
-  joinColumns=@JoinColumn(name="ACCOUNT_ID"),// Join table Source Entity Column
-  inverseJoinColumns=@JoinColumn(name="USER_ID"))// Join table Target Entity Column
-private Set<User> users = new HashSet<>();// Collection of Targets Entities
+@Entity
+@Table(name = "ACCOUNT")
+public class Account {
+  
+  @ManyToMany(cascade=CascadeType.ALL)
+  @JoinTable(
+    name="USER_ACCOUNT",// Join table name
+    joinColumns=@JoinColumn(name="ACCOUNT_ID"),// Join table Source Entity Column
+    inverseJoinColumns=@JoinColumn(name="USER_ID"))// Join table Target Entity Column
+  private Set<User> users = new HashSet<>();// Collection of Targets Entities
+  ...
+}
 ```
 
 Usage: Adding 2 Users to one Account
@@ -654,4 +661,34 @@ User user2 = createUser();
 account.getUsers().add(user);
 account.getUsers().add(user2);
 session.save(account);
+```
+
+### Bidirectional Many To Many Association: @ManyToMany
+
+"Many to Many" relationship where both entities know each the other. 
+
+Both **Source** and **Target** entities have collections for the other entity. The **Source** map the whole relationship.
+The **Target** will just point to the mapped relationship in the **Source**.
+
+**Source** Annotations (Same as in Unidirectional Many to Many):
+* @ManyToMany
+* @JoinTable:
+  * name="JOIN_TABLE_NAME"
+  * joinColumns=@JoinColumn(name="JOIN_TABLE_COLUMN_NAME_OF_SOURCE_FK"),
+  * inverseJoinColumns=@JoinColumn(name="JOIN_TABLE_COLUMN_NAME_OF_TARGET_FK"))
+
+**Target** Annotations:
+* @ManyToMany
+  * mappedBy = "source_attribute": field of the Source mapping this relationship
+
+Example: 
+
+```java
+@Entity
+@Table(name = "FINANCES_USER")
+public class User {
+
+  @ManyToMany(cascade = CascadeType.ALL, mappedBy = "users")// field of the Source mapping this relationship
+  private Set<Account> accounts = new HashSet<Account>();
+  ...
 ```

@@ -27,7 +27,8 @@ public class Application {
 //      accountTransactionUnidirectionalDemo(session, transaction);
 //      accountTransactionBidirectionalDemo(session, transaction);
 //      budgetTransactionsJoinTableDemo(session, transaction);
-      unidirectionalManyToManyDemo(session, transaction);
+//      unidirectionalManyToManyDemo(session, transaction);
+      bidirectionalManyToManyDemo(session, transaction);
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(0);
@@ -403,5 +404,32 @@ public class Application {
     user.setLastUpdatedBy("system");
     user.setLastUpdatedDate(new Date());
     return user;
+  }
+
+  // Bidirectional Many to Many association: @ManyToMany
+  public static void bidirectionalManyToManyDemo(Session session, org.hibernate.Transaction transaction) {
+    Account account = createNewAccount();
+    Account account2 = createNewAccount();
+    User user = createUser();
+    User user2 = createUser();
+
+    account.getUsers().add(user);
+    account.getUsers().add(user2);
+    user.getAccounts().add(account);
+    user2.getAccounts().add(account);
+
+    account2.getUsers().add(user);
+    account2.getUsers().add(user2);
+    user.getAccounts().add(account2);
+    user2.getAccounts().add(account2);
+
+
+    session.save(user);
+    session.save(user2);
+
+    transaction.commit();
+
+    User dbUser = (User) session.get(User.class, user.getUserId());
+    System.out.println(dbUser.getAccounts().iterator().next().getName());
   }
 }
