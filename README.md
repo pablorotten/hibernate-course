@@ -2,9 +2,9 @@
 
 ## Initial setup
 
-[Database EER-Diagram](img/EER-Diagram.png)
+[Database EER-Diagram](/img/EER-Diagram.png)
 
-![](img/EER-Diagram.png)
+![](/img/EER-Diagram.png)
 
 ### POM
 
