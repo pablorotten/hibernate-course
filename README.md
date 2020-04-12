@@ -2,9 +2,9 @@
 
 ## Initial setup
 
-[Database EER-Diagram](/img/EER-Diagram.png)
+[Database EER-Diagram](https://raw.githubusercontent.com/pablorotten/hibernate-course/master/img/ERR-Diagram.png)
 
-![](/img/EER-Diagram.png)
+![](https://raw.githubusercontent.com/pablorotten/hibernate-course/master/img/ERR-Diagram.png)
 
 ### POM
 
