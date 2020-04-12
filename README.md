@@ -2,6 +2,10 @@
 
 ## Initial setup
 
+[Database EER-Diagram](img/EER-Diagram.png)
+
+![](img/EER-Diagram.png)
+
 ### POM
 
 The libraries we need are:
@@ -538,7 +542,7 @@ session.save(account);
 
 ### Optional One to Many Association using Junction Table: @JoinTable
 
-*Optional One to Many* relationship where not always the *Many* table belongs to the *One*.
+"Optional One to Many" relationship where not always the *Many* table belongs to the *One*.
 
 A is related to *many* B but B is related to *0 or 1* A. So we use the JoinTable AB for model this relationship:
 * A is related to *many* AB; AB is related to *1* A
@@ -608,4 +612,46 @@ budget.getTransactions().add(createNewBeltPurchase(account));
 budget.getTransactions().add(createShoePurchase(account));
 
 session.save(budget);;
+```
+
+### Unidirectional Many To Many Association: @ManyToMany
+
+"One to Many" relationship where only one entity knows the other. 
+
+You have to choose which one is going to be the Owning side (**Source**). This entity will have the collection
+with the **Target** entities. Can use any collection: Set, List, Map.
+
+**Source** Annotations:
+* @ManyToMany
+* @JoinTable:
+  * name="JOIN_TABLE_NAME"
+  * joinColumns=@JoinColumn(name="JOIN_TABLE_COLUMN_NAME_OF_SOURCE_FK"),
+  * inverseJoinColumns=@JoinColumn(name="JOIN_TABLE_COLUMN_NAME_OF_TARGET_FK"))
+
+Example:
+```
+FINANCES_USER has Many ACCOUNTS and viceversa via USER_ACCOUNT
+
++---------------+       +--------------+       +---------+
+| FINANCES_USER +------<+ USER_ACCOUNT |>------+ ACCOUNT |
++---------------+       +--------------+       +---------+
+```
+
+```java
+@ManyToMany(cascade=CascadeType.ALL)
+@JoinTable(
+  name="USER_ACCOUNT",// Join table name
+  joinColumns=@JoinColumn(name="ACCOUNT_ID"),// Join table Source Entity Column
+  inverseJoinColumns=@JoinColumn(name="USER_ID"))// Join table Target Entity Column
+private Set<User> users = new HashSet<>();// Collection of Targets Entities
+```
+
+Usage: Adding 2 Users to one Account
+```java
+Account account = createNewAccount();
+User user = createUser();
+User user2 = createUser();
+account.getUsers().add(user);
+account.getUsers().add(user2);
+session.save(account);
 ```
