@@ -94,3 +94,24 @@ Bank bank = (Bank) session.get(Bank.class, 11L);
 session.delete(bank); // bank is not part of the application anymore
 transaction.commit();// delete query
 ```
+
+### Reattaching Detached Entities
+
+**update()**: use for reattaching entities from other session to the current one. Hibernate will perform an Update query
+to make sure the entity is synchronized with the database
+
+```java
+  Session session = HibernateUtil.getSessionFactory().openSession();
+  org.hibernate.Transaction transaction = session.beginTransaction();
+  Bank bank = (Bank) session.get(Bank.class, 1L); // bank from session 1
+  transaction.commit();
+  session.close();
+
+  // session is closed and bank is now detached
+
+  Session session2 = HibernateUtil.getSessionFactory().openSession();
+  org.hibernate.Transaction transaction2 = session2.beginTransaction();
+  session2.update(bank); // attaches bank to session2. Performs a update query
+  transaction2.commit();
+  session2.close();
+```
