@@ -7,7 +7,7 @@ import java.util.Date;
 import com.infiniteskills.data.entities.*;
 import org.hibernate.Session;
 
-public class Application {
+public class ApplicationHibernateBasics {
 
   public static void main(String[] args) {
     Session session = HibernateUtil.getSessionFactory().openSession();
