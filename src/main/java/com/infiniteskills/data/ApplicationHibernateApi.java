@@ -1,22 +1,19 @@
 package com.infiniteskills.data;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
 
 import org.hibernate.Session;
 
 import com.infiniteskills.data.entities.Account;
-import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
-import com.infiniteskills.data.entities.Credential;
 import com.infiniteskills.data.entities.Transaction;
-import com.infiniteskills.data.entities.User;
 
 public class ApplicationHibernateApi {
 
   public static void main(String[] args) {
-    savingEntities();
+//    savingEntities();
+    retrievingEntities();
   }
 
   public static void savingEntities() {
@@ -41,6 +38,38 @@ public class ApplicationHibernateApi {
       System.out.println(session.contains(account));
       System.out.println(session.contains(trans1));
       System.out.println(session.contains(trans1));
+
+      transaction.commit();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }finally{
+      session.close();
+      HibernateUtil.getSessionFactory().close();
+    }
+  }
+
+  public static void retrievingEntities() {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+
+    try {
+      org.hibernate.Transaction transaction = session.beginTransaction();
+      // ---- PERSISTENT ----
+      Bank getBank = (Bank) session.get(Bank.class, 1L); // executes the query and saves bank in persistence context
+      getBank = (Bank) session.get(Bank.class, 1L); // bank is already in Persistence context cache, no need to perform a new query
+      System.out.println("get Method Executed");
+      System.out.println(getBank.getName());
+
+      Bank getBankNull = (Bank) session.get(Bank.class, 123L);
+//      System.out.println(getBankNull.getName()); // null pointer exception >> process finished
+
+      System.out.println("------------");
+
+      Bank loadBank = (Bank) session.load(Bank.class, 1L); // Hibernate returns a proxy in place of the actual entity
+      System.out.println("load Method Executed");// bank is still not needed, so no query is executed
+      System.out.println(loadBank.getName());// query is executed here when the bank name is needed
+
+      Bank getBankNotFound = (Bank) session.get(Bank.class, 123L);
+      System.out.println(getBankNotFound.getName()); // object not found exception >> process continues
 
       transaction.commit();
     } catch (Exception e) {

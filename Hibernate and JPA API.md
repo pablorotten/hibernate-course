@@ -45,3 +45,25 @@ try {
   session.save(account);
   transaction.commit();
 ``` 
+
+### Retrieving entities
+
+**get()**: executes the query **immediately** and returns the entity. If not found, returns null pointer on accessing.
+```java
+Bank getBank = (Bank) session.get(Bank.class, 1L); // executes the query and saves bank in persistence context
+getBank = (Bank) session.get(Bank.class, 1L); // bank is already in Persistence context cache, no need to perform a new query
+getBank.getName();
+
+Bank getBankNull = (Bank) session.get(Bank.class, 123L);
+getBankNull.getName(); // null pointer exception
+```
+**load()**: Returns a proxy instead of the entity and only executes the query when is really needed (lazy). If not found, returns an _Object not found_ exception
+
+```java
+Bank loadBank = (Bank) session.load(Bank.class, 1L); // Hibernate returns a proxy in place of the actual entity
+// bank is still not needed, so no query is executed
+loadBank.getName();// query is executed here when the bank name is needed
+
+Bank getBankNotFound = (Bank) session.get(Bank.class, 123L);
+getBankNotFound.getName(); // object not found exception
+```
