@@ -82,3 +82,15 @@ bank.setLastUpdatedDate(new Date());
 
 transaction.commit(); // changes have been made >> sinlge update statement
 ```
+
+### Removing entities
+
+**delete()**: When an entity is removed, is kickout of the Persistent state. We can still use but whe shouldn't, the garbage
+collector will remove it finally. The Delete query will be preformed on the transaction commit
+```java
+org.hibernate.Transaction transaction = session.beginTransaction();
+
+Bank bank = (Bank) session.get(Bank.class, 11L);
+session.delete(bank); // bank is not part of the application anymore
+transaction.commit();// delete query
+```

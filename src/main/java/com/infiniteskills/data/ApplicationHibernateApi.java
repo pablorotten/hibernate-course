@@ -14,7 +14,8 @@ public class ApplicationHibernateApi {
   public static void main(String[] args) {
 //    savingEntities();
 //    retrievingEntities();
-    modifyingEntities();
+//    modifyingEntities();
+    removingEntities();
   }
 
   public static void savingEntities() {
@@ -97,6 +98,28 @@ public class ApplicationHibernateApi {
     } catch (Exception e) {
       e.printStackTrace();
     }finally{
+      session.close();
+      HibernateUtil.getSessionFactory().close();
+    }
+  }
+
+  public static void removingEntities() {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+
+    try {
+      org.hibernate.Transaction transaction = session.beginTransaction();
+
+      Bank bank = (Bank) session.get(Bank.class, 11L);
+
+      System.out.println(session.contains(bank));
+      session.delete(bank); // bank is not part of the application anymore
+      System.out.println("delete Method Invoked");
+      System.out.println(session.contains(bank));
+
+      transaction.commit();// delete query
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally{
       session.close();
       HibernateUtil.getSessionFactory().close();
     }
