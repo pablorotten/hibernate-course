@@ -67,3 +67,18 @@ loadBank.getName();// query is executed here when the bank name is needed
 Bank getBankNotFound = (Bank) session.get(Bank.class, 123L);
 getBankNotFound.getName(); // object not found exception
 ```
+
+### Modifying Entities
+
+When changes are made against a retrieved entity, the entity is not in sync with the database anymore. Hibernate is aware of
+that and when the transaction is commited, generates one single update query with all the changes made to the entity.
+
+```java
+Bank bank = (Bank) session.get(Bank.class, 1L); // select statement
+
+bank.setName("New Hope Bank");
+bank.setLastUpdatedBy("Kevin Bowersox");
+bank.setLastUpdatedDate(new Date());
+
+transaction.commit(); // changes have been made >> sinlge update statement
+```

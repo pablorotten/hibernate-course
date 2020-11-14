@@ -13,7 +13,8 @@ public class ApplicationHibernateApi {
 
   public static void main(String[] args) {
 //    savingEntities();
-    retrievingEntities();
+//    retrievingEntities();
+    modifyingEntities();
   }
 
   public static void savingEntities() {
@@ -72,6 +73,27 @@ public class ApplicationHibernateApi {
       System.out.println(getBankNotFound.getName()); // object not found exception >> process continues
 
       transaction.commit();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }finally{
+      session.close();
+      HibernateUtil.getSessionFactory().close();
+    }
+  }
+
+  public static void modifyingEntities() {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+
+    try {
+      org.hibernate.Transaction transaction = session.beginTransaction();
+
+      Bank bank = (Bank) session.get(Bank.class, 1L); // select statement
+
+      bank.setName("New Hope Bank");
+      bank.setLastUpdatedBy("Kevin Bowersox");
+      bank.setLastUpdatedDate(new Date());
+
+      transaction.commit(); // changes have been made >> update statement
     } catch (Exception e) {
       e.printStackTrace();
     }finally{
