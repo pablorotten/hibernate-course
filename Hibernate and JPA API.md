@@ -115,3 +115,26 @@ to make sure the entity is synchronized with the database
   transaction2.commit();
   session2.close();
 ```
+
+### Save or update
+
+Either persists or reattaches an entitiy
+
+```java
+Session session = HibernateUtil.getSessionFactory().openSession();
+org.hibernate.Transaction transaction = session.beginTransaction();
+Bank detachedBank = (Bank) session.get(Bank.class, 1L);
+transaction.commit();
+session.close();
+
+Bank transientBank = createBank();
+
+Session session2 = HibernateUtil.getSessionFactory().openSession();
+org.hibernate.Transaction transaction2 = session2.beginTransaction();
+
+session2.saveOrUpdate(transientBank); // saves entity
+session2.saveOrUpdate(detachedBank); // reattaches entity
+detachedBank.setName("Test Bank 2");
+transaction2.commit();
+session2.close();
+```
