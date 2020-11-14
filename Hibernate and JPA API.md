@@ -118,7 +118,7 @@ to make sure the entity is synchronized with the database
 
 ### Save or update
 
-Either persists or reattaches an entitiy
+Either persists or reattaches an entitiy.
 
 ```java
 Session session = HibernateUtil.getSessionFactory().openSession();
@@ -132,8 +132,8 @@ Bank transientBank = createBank();
 Session session2 = HibernateUtil.getSessionFactory().openSession();
 org.hibernate.Transaction transaction2 = session2.beginTransaction();
 
-session2.saveOrUpdate(transientBank); // saves entity
-session2.saveOrUpdate(detachedBank); // reattaches entity
+session2.saveOrUpdate(transientBank); // saves entity >> insert query
+session2.saveOrUpdate(detachedBank); // reattaches entity >> update query
 detachedBank.setName("Test Bank 2");
 transaction2.commit();
 session2.close();
