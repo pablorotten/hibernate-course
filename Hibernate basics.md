@@ -1,4 +1,4 @@
-# Hibernate and Java Persistence API (JPA)
+# Hibernate basics
 
 ## Initial setup
 
