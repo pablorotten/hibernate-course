@@ -12,7 +12,7 @@
 ### Persistence context
 
 * Provides a cache of all persistent entity instances
-* Correspondes with a session:
+* Corresponds with a session:
   ```java
   SessionFactory factory = HibernateUtil.getSessionFactory();
   Session session = factory.openSession();
@@ -101,19 +101,19 @@ transaction.commit();// delete query
 to make sure the entity is synchronized with the database
 
 ```java
-  Session session = HibernateUtil.getSessionFactory().openSession();
-  org.hibernate.Transaction transaction = session.beginTransaction();
-  Bank bank = (Bank) session.get(Bank.class, 1L); // bank from session 1
-  transaction.commit();
-  session.close();
+Session session = HibernateUtil.getSessionFactory().openSession();
+org.hibernate.Transaction transaction = session.beginTransaction();
+Bank bank = (Bank) session.get(Bank.class, 1L); // bank from session 1
+transaction.commit();
+session.close();
 
-  // session is closed and bank is now detached
+// session is closed and bank is now detached
 
-  Session session2 = HibernateUtil.getSessionFactory().openSession();
-  org.hibernate.Transaction transaction2 = session2.beginTransaction();
-  session2.update(bank); // attaches bank to session2. Performs a update query
-  transaction2.commit();
-  session2.close();
+Session session2 = HibernateUtil.getSessionFactory().openSession();
+org.hibernate.Transaction transaction2 = session2.beginTransaction();
+session2.update(bank); // attaches bank to session2. Performs a update query
+transaction2.commit();
+session2.close();
 ```
 
 ### Save or update
