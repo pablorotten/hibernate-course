@@ -16,6 +16,10 @@ import com.infiniteskills.data.entities.User;
 public class ApplicationHibernateApi {
 
   public static void main(String[] args) {
+    savingEntities();
+  }
+
+  public static void savingEntities() {
     // ---- TRANSIENT ----
     Session session = HibernateUtil.getSessionFactory().openSession();
 
