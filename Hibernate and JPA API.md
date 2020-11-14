@@ -138,3 +138,33 @@ detachedBank.setName("Test Bank 2");
 transaction2.commit();
 session2.close();
 ```
+
+### Flushing The Persistence Context
+
+**Transaction**: Houses the connection between the entities and the database. Persists all the changes of th entities as an
+atomic unit, if something fails rollbacks everything. Performs a flush behind the courtains.
+
+We can perform a flush directly ```session.flush()``` or indirectly ```transaction.commit()```
+
+```java
+Session session = HibernateUtil.getSessionFactory().openSession();
+org.hibernate.Transaction transaction = session.beginTransaction();
+try {
+  Bank bank = (Bank) session.get(Bank.class, 1L);
+  bank.setName("Something Different");
+  System.out.println("Calling Flush");
+  session.flush(); // Update query 1
+
+  bank.setAddressLine1("Another Address Line");
+  System.out.println("Calling commit");
+  transaction.commit(); // Update query 2
+} catch (Exception e) {
+  transaction.rollback(); // rollbacks if something fails
+  e.printStackTrace();
+} finally{
+  session.close();
+  HibernateUtil.getSessionFactory().close();
+}
+```
+
+We can remove the ```session.flush()``` and leave the ```transaction.commit()```, then all the update queries will be performed there.

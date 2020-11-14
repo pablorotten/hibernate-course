@@ -17,7 +17,8 @@ public class ApplicationHibernateApi {
 //    modifyingEntities();
 //    removingEntities();
 //    reattachingEntities();
-    saveOrUpdateEntities();
+//    saveOrUpdateEntities();
+    flushingPersistenceContext();
   }
 
   public static void savingEntities() {
@@ -178,6 +179,28 @@ public class ApplicationHibernateApi {
       HibernateUtil.getSessionFactory().close();
     }
   }
+
+  public static void flushingPersistenceContext() {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    org.hibernate.Transaction transaction = session.beginTransaction();
+    try {
+      Bank bank = (Bank) session.get(Bank.class, 1L);
+      bank.setName("Something Different");
+      System.out.println("Calling Flush");
+      session.flush(); // update query 1
+
+      bank.setAddressLine1("Another Address Line");
+      System.out.println("Calling commit");
+      transaction.commit(); // update query 2
+    } catch (Exception e) {
+      transaction.rollback(); // rollbacks if fails
+      e.printStackTrace();
+    } finally{
+      session.close();
+      HibernateUtil.getSessionFactory().close();
+    }
+  }
+
   private static Bank createBank() {
     Bank bank = new Bank();
     bank.setName("First United Federal");
