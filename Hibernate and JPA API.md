@@ -186,3 +186,71 @@ Add hibernate entitiy manager in the pom.xml:
 
 Add a configuration similar than the one we did for Hibernate in ```hibernate.cfg.xml```. Create the file persistence.xml
 in ```resources/META-INF``` and write the configuration there.
+
+### Saving entities
+
+```java
+EntityManagerFactory factory = null; // similar to the SessionFactory in Hibernate, creates entityManagers instead of sessions
+EntityManager em = null; // like the session in Hibernate. Used to perform operations on the entities
+EntityTransaction tx = null; // similar to the transaction interface in Hibernate
+
+try {
+  factory = Persistence.createEntityManagerFactory("infinite-finances");
+  em = factory.createEntityManager();
+  tx = em.getTransaction();
+  tx.begin();
+
+  Bank bank = createBank();
+
+  em.persist(bank);
+  tx.commit();
+} catch (Exception e) {
+  tx.rollback();
+} finally {
+  em.close();
+}
+```
+
+## Hibernate and JPA comparison
+
+### Setup
+
+The stuff needed to work with the entities
+
+| Hibernate      | JPA                  |
+|----------------|----------------------|
+| SessionFactory | EntityManagerFactory |
+| Session        | EntityManager        |
+| Transaction    | EntityTransaction    |
+
+Hibernate:
+```java
+Session session = HibernateUtil.getSessionFactory().openSession();
+org.hibernate.Transaction transaction = session.beginTransaction();
+
+Bank bank = new Bank();
+
+session.save(bank);
+transaction.commit();
+session.close();
+HibernateUtil.getSessionFactory().close();
+```
+
+JPA:
+```java
+EntityManagerFactory emf = Persistence.createEntityManagerFactory("infinite-finances");
+EntityManager em = emf.createEntityManager();
+EntityTransaction tx = em.getTransaction();
+tx.begin();
+
+Bank bank = createBank();
+
+em.persist(bank);
+tx.commit();
+em.close();
+```
+
+
+
+
+### Saving entities

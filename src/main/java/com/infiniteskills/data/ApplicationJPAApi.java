@@ -12,25 +12,44 @@ import java.util.Date;
 public class ApplicationJPAApi {
 
   public static void main(String[] args) {
-    JPATest();
+//    JPATest();
+    savingEntities();
   }
 
   public static void JPATest() {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("infinite-finances");
     EntityManager em = emf.createEntityManager();
-
     EntityTransaction tx =  em.getTransaction();
-
     tx.begin();
 
     Bank bank = createBank();
 
     em.persist(bank);
-
     tx.commit();
-
     em.close();
     emf.close();
+  }
+
+  public static void savingEntities() {
+    EntityManagerFactory factory = null; // similar to the SessionFactory in Hibernate, creates entityManagers instead of sessions
+    EntityManager em = null; // like the session in Hibernate. Used to perform operations on the entities
+    EntityTransaction tx = null; // similar to the transaction interface in Hibernate
+
+    try {
+      factory = Persistence.createEntityManagerFactory("infinite-finances");
+      em = factory.createEntityManager();
+      tx = em.getTransaction();
+      tx.begin();
+
+      Bank bank = createBank();
+
+      em.persist(bank);
+      tx.commit();
+    } catch (Exception e) {
+      tx.rollback();
+    } finally {
+      em.close();
+    }
   }
 
   private static Bank createBank() {
