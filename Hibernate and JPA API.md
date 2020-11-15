@@ -233,7 +233,7 @@ tx.commit();
 ```
 
 
-## Hibernate and JPA comparison
+## Hibernate vs JPA
 
 ### Setup
 
@@ -274,6 +274,11 @@ em.close();
 
 ### Functions
 
-| Hibernate         | JPA                        |
-|-------------------|----------------------------|
-| get() <br> load() | find() <br> getReference() |
+| Hibernate (Session)               | JPA (EntitiyManager)               |
+|-----------------------------------|------------------------------------|
+| save()                            | persist()                          |
+| get() <br> load()                 | find() <br> getReference()         |
+| delete()                          | remove()                           |
+| merge()                           | merge()                            |
+| evict() <br> close() <br> clear() | detach() <br> close() <br> clear() |
+| flush()                           | flush()                            |
