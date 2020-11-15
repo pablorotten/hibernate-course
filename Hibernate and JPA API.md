@@ -189,6 +189,8 @@ in ```resources/META-INF``` and write the configuration there.
 
 ### Saving entities
 
+With EntitiyManager ```persist(entity)```
+
 ```java
 EntityManagerFactory factory = null; // similar to the SessionFactory in Hibernate, creates entityManagers instead of sessions
 EntityManager em = null; // like the session in Hibernate. Used to perform operations on the entities
@@ -219,6 +221,18 @@ try {
     Bank findBank = em.find(Bank.class, 1L);
     Bank getRefBank = em.getReference(Bank.class, 1L);
 ```
+
+### Modifying entities
+
+```find()``` or ```getReference()```, then change the entitiy and commit
+
+```java
+Bank bank = em.find(Bank.class, 1L);
+bank.setName("Another Demonstration");
+tx.commit();
+```
+
+
 ## Hibernate and JPA comparison
 
 ### Setup

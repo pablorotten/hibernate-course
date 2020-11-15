@@ -14,7 +14,8 @@ public class ApplicationJPAApi {
   public static void main(String[] args) {
 //    JPATest();
 //    savingEntities();
-    retrievingEntities();
+//    retrievingEntities();
+    modifyingEntities();
   }
 
   public static void JPATest() {
@@ -71,6 +72,29 @@ public class ApplicationJPAApi {
     tx.commit();
     em.close();
     emf.close();
+  }
+
+  public static void modifyingEntities() {
+    EntityManagerFactory emf = null;
+    EntityManager em = null;
+    EntityTransaction tx = null;
+
+    try{
+      emf = Persistence.createEntityManagerFactory("infinite-finances");
+      em = emf.createEntityManager();
+      tx = em.getTransaction();
+      tx.begin();
+
+      Bank bank = em.find(Bank.class, 1L);
+      bank.setName("Another Demonstration");
+
+      tx.commit();
+    } catch(Exception e) {
+      tx.rollback();
+    } finally {
+      em.close();
+      emf.close();
+    }
   }
 
   private static Bank createBank() {
