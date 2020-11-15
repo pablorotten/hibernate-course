@@ -210,7 +210,15 @@ try {
   em.close();
 }
 ```
+### Retrieving entities
 
+**find()**: executes the query **immediately** and returns the entity. If not found, returns null pointer on accessing.
+**getReference()**: Returns a proxy instead of the entity and only executes the query when is really needed (lazy). If not found, returns an _Object not found_ exception
+
+```java
+    Bank findBank = em.find(Bank.class, 1L);
+    Bank getRefBank = em.getReference(Bank.class, 1L);
+```
 ## Hibernate and JPA comparison
 
 ### Setup
@@ -250,7 +258,8 @@ tx.commit();
 em.close();
 ```
 
+### Functions
 
-
-
-### Saving entities
+| Hibernate         | JPA                        |
+|-------------------|----------------------------|
+| get() <br> load() | find() <br> getReference() |

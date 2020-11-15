@@ -13,7 +13,8 @@ public class ApplicationJPAApi {
 
   public static void main(String[] args) {
 //    JPATest();
-    savingEntities();
+//    savingEntities();
+    retrievingEntities();
   }
 
   public static void JPATest() {
@@ -50,6 +51,26 @@ public class ApplicationJPAApi {
     } finally {
       em.close();
     }
+  }
+
+  public static void retrievingEntities() {
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("infinite-finances");
+    EntityManager em = emf.createEntityManager();
+    EntityTransaction tx =  em.getTransaction();
+    tx.begin();
+
+
+    Bank bank1 = em.find(Bank.class, 1L); // null pointer exception if doesn't exist
+    System.out.println(em.contains(bank1));
+    System.out.println(bank1.getName());
+
+    Bank bank = em.getReference(Bank.class, 1L); // returns a proxy (lazy). object not found if doesn't exist
+    System.out.println(em.contains(bank));
+    System.out.println(bank.getName());
+
+    tx.commit();
+    em.close();
+    emf.close();
   }
 
   private static Bank createBank() {
