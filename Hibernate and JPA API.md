@@ -168,3 +168,21 @@ try {
 ```
 
 We can remove the ```session.flush()``` and leave the ```transaction.commit()```, then all the update queries will be performed there.
+
+## JPA API
+
+JPA is a standard that the Java community have developed. Hibernate is an implementation of JPA, that's what we are going to use.
+
+### Configuration
+
+Add hibernate entitiy manager in the pom.xml:
+```xml
+<dependency>
+  <groupId>org.hibernate</groupId>
+  <artifactId>hibernate-entitymanager</artifactId>
+  <version>4.3.7.Final</version>
+</dependency>
+```
+
+Add a configuration similar than the one we did for Hibernate in ```hibernate.cfg.xml```. Create the file persistence.xml
+in ```resources/META-INF``` and write the configuration there.
