@@ -187,9 +187,9 @@ Add hibernate entitiy manager in the pom.xml:
 Add a configuration similar than the one we did for Hibernate in ```hibernate.cfg.xml```. Create the file persistence.xml
 in ```resources/META-INF``` and write the configuration there.
 
-### Saving entities
+### JPA setup
 
-With EntitiyManager ```persist(entity)```
+In the same way for Hibernate we needed to start the session, begin the transaction, commit, close, etc. For JPA there's a similar process:
 
 ```java
 EntityManagerFactory factory = null; // similar to the SessionFactory in Hibernate, creates entityManagers instead of sessions
@@ -202,15 +202,30 @@ try {
   tx = em.getTransaction();
   tx.begin();
 
-  Bank bank = createBank();
+  ...
+  // your changes to the entities here and Entitiy Manager usages
+  Bank bank1 = em.getReference(Bank.class, 1L);
+  Bank bank2 = createBank();
+  em.remove(bank1)
+  em.persist(bank2)
+  ...
 
-  em.persist(bank);
   tx.commit();
 } catch (Exception e) {
   tx.rollback();
 } finally {
   em.close();
 }
+
+```
+
+### Saving entities
+
+With EntitiyManager ```persist(entity)```
+
+```java
+Bank bank = createBank();
+em.persist(bank);
 ```
 ### Retrieving entities
 
