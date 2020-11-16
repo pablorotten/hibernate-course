@@ -218,8 +218,8 @@ try {
 **getReference()**: Returns a proxy instead of the entity and only executes the query when is really needed (lazy). If not found, returns an _Object not found_ exception
 
 ```java
-    Bank findBank = em.find(Bank.class, 1L);
-    Bank getRefBank = em.getReference(Bank.class, 1L);
+Bank findBank = em.find(Bank.class, 1L);
+Bank getRefBank = em.getReference(Bank.class, 1L);
 ```
 
 ### Modifying entities
@@ -232,6 +232,14 @@ bank.setName("Another Demonstration");
 tx.commit();
 ```
 
+### Removing entities
+
+```remove()```
+
+```java
+Bank bank = em.find(Bank.class, 1L);
+em.remove(bank);
+```
 
 ## Hibernate vs JPA
 
