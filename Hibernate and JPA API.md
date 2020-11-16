@@ -20,7 +20,7 @@
   session.close();
   ```
   
-### Hibernate API Actions
+### Hibernate API Actions and functions
 
 | Initial State | Action                       | End State  |
 |---------------|------------------------------|------------|
@@ -30,6 +30,8 @@
 | Detached      | update() <br> saveOrUpdate() | Persistent | 
 | Persistent    | evict()                      | Detached   |
 
+Other functions:
+* ```session.contains(entitiy)```: Check if this instance is associated with this Session
 
 ### Saving entities
 
@@ -173,6 +175,19 @@ We can remove the ```session.flush()``` and leave the ```transaction.commit()```
 
 JPA is a standard that the Java community have developed. Hibernate is an implementation of JPA, that's what we are going to use.
 
+### JPA API Actions and functions
+
+| Initial State | Action                     | End State  |
+|---------------|----------------------------|------------|
+| None          | find() <br> getReference() | Persistent |
+| Transient     | persist()                  | Persistent |
+| Persistent    | remove()                   | Removed    |
+| Persistent    | detach() <br> clear()      | Detached   |
+
+Other functions::
+* ```entitiyManager.contains(entitiy)```: Check if this instance is associated with this Session
+* ```entitiyManager.clear()```: Detaches all the entities of the current entitiy Manager
+
 ### Configuration
 
 Add hibernate entitiy manager in the pom.xml:
@@ -254,6 +269,19 @@ tx.commit();
 ```java
 Bank bank = em.find(Bank.class, 1L);
 em.remove(bank);
+```
+
+### Merging detached entities
+
+```entitiyManager.merge(entitiy)```: Reataches the detached entity **merging** the changes made on transient state. It returns the
+new attached entity to work with.
+
+```java
+Bank bank = em.find(Bank.class, 1L); // get the instance for bank with id = 1
+em.detach(bank); // detaches bank
+bank.setName("Something else"); // change the name in the detached bank
+Bank bank2 = em.merge(bank); // reattach the bank applying the changes made in bank when transient state and return attached bank2
+bank.setName("Something else 2"); // changes made in detached bank won't be persisted
 ```
 
 ## Hibernate vs JPA

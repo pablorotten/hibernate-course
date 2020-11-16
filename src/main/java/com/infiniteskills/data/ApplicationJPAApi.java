@@ -16,7 +16,8 @@ public class ApplicationJPAApi {
 //    savingEntities();
 //    retrievingEntities();
 //    modifyingEntities();
-    removingEntities();
+//    removingEntities();
+    mergingDetachedEntities();
   }
 
   public static void JPATest() {
@@ -118,6 +119,34 @@ public class ApplicationJPAApi {
     }catch(Exception e){
       tx.rollback();
     }finally{
+      em.close();
+      emf.close();
+    }
+  }
+
+  public static void mergingDetachedEntities() {
+    EntityManagerFactory emf = null;
+    EntityManager em = null;
+    EntityTransaction tx = null;
+
+    try{
+      emf = Persistence.createEntityManagerFactory("infinite-finances");
+      em = emf.createEntityManager();
+      tx = em.getTransaction();
+      tx.begin();
+
+      Bank bank = em.find(Bank.class, 1L); // get the instance for bank with id = 1
+      em.detach(bank); // detaches bank
+      System.out.println(em.contains(bank));
+
+      bank.setName("Something else"); // changing name in detached bank
+      Bank bank2 = em.merge(bank); // reattach the bank to the instance with id = 1 applying the changes made in the transient state and saves it in another variable
+
+      bank.setName("Something else 2"); // bank is now detached and his changes won't be persisted
+      tx.commit();
+    } catch(Exception e){
+      tx.rollback();
+    } finally{
       em.close();
       emf.close();
     }
