@@ -8,145 +8,145 @@ import javax.persistence.*;
 @Table(name="BANK")
 public class Bank {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="BANK_ID")
-	private Long bankId;
+  @Id
+  @GeneratedValue(strategy=GenerationType.AUTO)
+  @Column(name="BANK_ID")
+  private Long bankId;
 
-	@Column(name="NAME")
-	private String name;
-	
-	@Embedded // Composite value type. Annotation not needed, Hibernate figures out
-	private Address address = new Address();
+  @Column(name="NAME")
+  private String name;
 
-	@Column(name="IS_INTERNATIONAL")
-	private boolean international;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="LAST_UPDATED_DATE")
-	private Date lastUpdatedDate;
+  @Embedded // Composite value type. Annotation not needed, Hibernate figures out
+  private Address address = new Address();
 
-	@Column(name="LAST_UPDATED_BY")
-	private String lastUpdatedBy;
+  @Column(name="IS_INTERNATIONAL")
+  private boolean international;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="CREATED_DATE")
-	private Date createdDate;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name="LAST_UPDATED_DATE")
+  private Date lastUpdatedDate;
 
-	@Column(name="CREATED_BY")
-	private String createdBy;
+  @Column(name="LAST_UPDATED_BY")
+  private String lastUpdatedBy;
 
-	//Mapping a Collection
-//	@ElementCollection // Map a collection of instances
-//	@CollectionTable(name = "BANK_CONTACT", joinColumns = @JoinColumn(name = "BANK_ID")) // Join the id of BANK with this column of BANK_CONTACT
-//	@Column(name = "NAME") // Each String of the contacts collection is an entry in the NAME column
-//	private Collection<String> contacts = new ArrayList<String>();
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name="CREATED_DATE")
+  private Date createdDate;
 
-	//Mapping a Map
-	@ElementCollection
-	@CollectionTable(name="BANK_CONTACT", joinColumns=@JoinColumn(name="BANK_ID"))
-	@MapKeyColumn(name="POSITION_TYPE") // Map the column for key of the Map
-	@Column(name="NAME")
-	private Map<String, String> contacts = new HashMap<String, String>();
+  @Column(name="CREATED_BY")
+  private String createdBy;
 
-	public Long getBankId() {
-		return bankId;
-	}
+  //Mapping a Collection
+//  @ElementCollection // Map a collection of instances
+//  @CollectionTable(name = "BANK_CONTACT", joinColumns = @JoinColumn(name = "BANK_ID")) // Join the id of BANK with this column of BANK_CONTACT
+//  @Column(name = "NAME") // Each String of the contacts collection is an entry in the NAME column
+//  private Collection<String> contacts = new ArrayList<String>();
 
-	public void setBankId(Long bankId) {
-		this.bankId = bankId;
-	}
+  //Mapping a Map
+  @ElementCollection
+  @CollectionTable(name="BANK_CONTACT", joinColumns=@JoinColumn(name="BANK_ID"))
+  @MapKeyColumn(name="POSITION_TYPE") // Map the column for key of the Map
+  @Column(name="NAME")
+  private Map<String, String> contacts = new HashMap<String, String>();
 
-	public String getName() {
-		return name;
-	}
+  public Long getBankId() {
+    return bankId;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setBankId(Long bankId) {
+    this.bankId = bankId;
+  }
 
-	// Getters and Setters from the Address class
-	public String getAddressLine1() {
-		return address.getAddressLine1();
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setAddressLine1(String addressLine1) {
-		this.address.setAddressLine1(addressLine1);
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public String getAddressLine2() {
-		return address.getAddressLine2();
-	}
+  // Getters and Setters from the Address class
+  public String getAddressLine1() {
+    return address.getAddressLine1();
+  }
 
-	public void setAddressLine2(String addressLine2) {
-		this.address.setAddressLine2(addressLine2);
-	}
+  public void setAddressLine1(String addressLine1) {
+    this.address.setAddressLine1(addressLine1);
+  }
 
-	public String getCity() {
-		return address.getCity();
-	}
+  public String getAddressLine2() {
+    return address.getAddressLine2();
+  }
 
-	public void setCity(String city) {
-		this.address.setCity(city);
-	}
+  public void setAddressLine2(String addressLine2) {
+    this.address.setAddressLine2(addressLine2);
+  }
 
-	public String getState() {
-		return address.getState();
-	}
+  public String getCity() {
+    return address.getCity();
+  }
 
-	public void setState(String state) {
-		this.address.setState(state);
-	}
+  public void setCity(String city) {
+    this.address.setCity(city);
+  }
 
-	public String getZipCode() {
-		return address.getZipCode();
-	}
+  public String getState() {
+    return address.getState();
+  }
 
-	public void setZipCode(String zipCode) {
-		this.address.setZipCode(zipCode);
-	}
+  public void setState(String state) {
+    this.address.setState(state);
+  }
 
-	public boolean isInternational() {
-		return international;
-	}
+  public String getZipCode() {
+    return address.getZipCode();
+  }
 
-	public void setInternational(boolean international) {
-		this.international = international;
-	}
+  public void setZipCode(String zipCode) {
+    this.address.setZipCode(zipCode);
+  }
 
-	public Date getLastUpdatedDate() {
-		return lastUpdatedDate;
-	}
+  public boolean isInternational() {
+    return international;
+  }
 
-	public void setLastUpdatedDate(Date lastUpdatedDate) {
-		this.lastUpdatedDate = lastUpdatedDate;
-	}
+  public void setInternational(boolean international) {
+    this.international = international;
+  }
 
-	public String getLastUpdatedBy() {
-		return lastUpdatedBy;
-	}
+  public Date getLastUpdatedDate() {
+    return lastUpdatedDate;
+  }
 
-	public void setLastUpdatedBy(String lastUpdatedBy) {
-		this.lastUpdatedBy = lastUpdatedBy;
-	}
+  public void setLastUpdatedDate(Date lastUpdatedDate) {
+    this.lastUpdatedDate = lastUpdatedDate;
+  }
 
-	public Date getCreatedDate() {
-		return createdDate;
-	}
+  public String getLastUpdatedBy() {
+    return lastUpdatedBy;
+  }
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
+  public void setLastUpdatedBy(String lastUpdatedBy) {
+    this.lastUpdatedBy = lastUpdatedBy;
+  }
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
+  public Date getCreatedDate() {
+    return createdDate;
+  }
 
-	public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+  public void setCreatedDate(Date createdDate) {
+    this.createdDate = createdDate;
+  }
 
-//	public Collection<String> getContacts() { return contacts; }
-	public Map<String, String> getContacts() { return contacts; }
+  public String getCreatedBy() {
+    return createdBy;
+  }
 
-//	public void setContacts(Collection<String> contacts) { this.contacts = contacts; }
-	public void setContacts(Map<String, String> contacts) { this.contacts = contacts; }
+  public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+
+//  public Collection<String> getContacts() { return contacts; }
+  public Map<String, String> getContacts() { return contacts; }
+
+//  public void setContacts(Collection<String> contacts) { this.contacts = contacts; }
+  public void setContacts(Map<String, String> contacts) { this.contacts = contacts; }
 }

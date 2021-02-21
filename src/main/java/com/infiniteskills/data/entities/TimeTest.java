@@ -14,140 +14,140 @@ import javax.persistence.TemporalType;
 @Table(name = "TIME_TEST")
 public class TimeTest {
 
-	@Id
-	@GeneratedValue
-	@Column(name = "TIME_TEST_ID")
-	private Long timeTestId;
+  @Id
+  @GeneratedValue
+  @Column(name = "TIME_TEST_ID")
+  private Long timeTestId;
 
-	@Temporal(TemporalType.TIMESTAMP) // Date + Time
-	@Column(name = "DATETIME_COLUMN")
-	private Date datetimeColumn;
+  @Temporal(TemporalType.TIMESTAMP) // Date + Time
+  @Column(name = "DATETIME_COLUMN")
+  private Date datetimeColumn;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "TIMESTAMP_COLUMN")
-	private Date timestampColumn;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "TIMESTAMP_COLUMN")
+  private Date timestampColumn;
 
-	@Temporal(TemporalType.DATE) // Date
-	@Column(name = "DATE_COLUMN")
-	private Date dateColumn;
+  @Temporal(TemporalType.DATE) // Date
+  @Column(name = "DATE_COLUMN")
+  private Date dateColumn;
 
-	@Temporal(TemporalType.TIME) // Time
-	@Column(name = "TIME_COLUMN")
-	private Date timeColumn;
+  @Temporal(TemporalType.TIME) // Time
+  @Column(name = "TIME_COLUMN")
+  private Date timeColumn;
 
-	@Column(name = "SQL_DATETIME_COLUMN")
-	private java.sql.Timestamp sqlDatetimeColumn;
+  @Column(name = "SQL_DATETIME_COLUMN")
+  private java.sql.Timestamp sqlDatetimeColumn;
 
-	@Column(name = "SQL_TIMESTAMP_COLUMN")
-	private java.sql.Timestamp sqlTimestampColumn;
+  @Column(name = "SQL_TIMESTAMP_COLUMN")
+  private java.sql.Timestamp sqlTimestampColumn;
 
-	@Column(name = "SQL_DATE_COLUMN")
-	private java.sql.Date sqlDateColumn;
+  @Column(name = "SQL_DATE_COLUMN")
+  private java.sql.Date sqlDateColumn;
 
-	@Column(name = "SQL_TIME_COLUMN")
-	private java.sql.Time sqlTimeColumn;
+  @Column(name = "SQL_TIME_COLUMN")
+  private java.sql.Time sqlTimeColumn;
 
-	public TimeTest(){
-		
-	}
-	
-	public TimeTest(Date date){
-		this.datetimeColumn = date;
-		this.timestampColumn = date;
-		this.timeColumn = date;
-		this.dateColumn = date;
-		
-		this.sqlDatetimeColumn = new java.sql.Timestamp(date.getTime());
-		this.sqlTimestampColumn = new java.sql.Timestamp(date.getTime());
-		this.sqlDateColumn = new java.sql.Date(date.getTime());
-		this.sqlTimeColumn = new java.sql.Time(date.getTime());
-	}
-	
-	public Long getTimeTestId() {
-		return timeTestId;
-	}
+  public TimeTest(){
 
-	public void setTimeTestId(Long timeTestId) {
-		this.timeTestId = timeTestId;
-	}
+  }
 
-	public Date getDatetimeColumn() {
-		return datetimeColumn;
-	}
+  public TimeTest(Date date){
+    this.datetimeColumn = date;
+    this.timestampColumn = date;
+    this.timeColumn = date;
+    this.dateColumn = date;
 
-	public void setDatetimeColumn(Date datetimeColumn) {
-		this.datetimeColumn = datetimeColumn;
-	}
+    this.sqlDatetimeColumn = new java.sql.Timestamp(date.getTime());
+    this.sqlTimestampColumn = new java.sql.Timestamp(date.getTime());
+    this.sqlDateColumn = new java.sql.Date(date.getTime());
+    this.sqlTimeColumn = new java.sql.Time(date.getTime());
+  }
 
-	public Date getTimestampColumn() {
-		return timestampColumn;
-	}
+  public Long getTimeTestId() {
+    return timeTestId;
+  }
 
-	public void setTimestampColumn(Date timestampColumn) {
-		this.timestampColumn = timestampColumn;
-	}
+  public void setTimeTestId(Long timeTestId) {
+    this.timeTestId = timeTestId;
+  }
 
-	public Date getDateColumn() {
-		return dateColumn;
-	}
+  public Date getDatetimeColumn() {
+    return datetimeColumn;
+  }
 
-	public void setDateColumn(Date dateColumn) {
-		this.dateColumn = dateColumn;
-	}
+  public void setDatetimeColumn(Date datetimeColumn) {
+    this.datetimeColumn = datetimeColumn;
+  }
 
-	public Date getTimeColumn() {
-		return timeColumn;
-	}
+  public Date getTimestampColumn() {
+    return timestampColumn;
+  }
 
-	public void setTimeColumn(Date timeColumn) {
-		this.timeColumn = timeColumn;
-	}
+  public void setTimestampColumn(Date timestampColumn) {
+    this.timestampColumn = timestampColumn;
+  }
 
-	public java.sql.Timestamp getSqlDatetimeColumn() {
-		return sqlDatetimeColumn;
-	}
+  public Date getDateColumn() {
+    return dateColumn;
+  }
 
-	public void setSqlDatetimeColumn(java.sql.Timestamp sqlDatetimeColumn) {
-		this.sqlDatetimeColumn = sqlDatetimeColumn;
-	}
+  public void setDateColumn(Date dateColumn) {
+    this.dateColumn = dateColumn;
+  }
 
-	public java.sql.Timestamp getSqlTimestampColumn() {
-		return sqlTimestampColumn;
-	}
+  public Date getTimeColumn() {
+    return timeColumn;
+  }
 
-	public void setSqlTimestampColumn(java.sql.Timestamp sqlTimestampColumn) {
-		this.sqlTimestampColumn = sqlTimestampColumn;
-	}
+  public void setTimeColumn(Date timeColumn) {
+    this.timeColumn = timeColumn;
+  }
 
-	public java.sql.Date getSqlDateColumn() {
-		return sqlDateColumn;
-	}
+  public java.sql.Timestamp getSqlDatetimeColumn() {
+    return sqlDatetimeColumn;
+  }
 
-	public void setSqlDateColumn(java.sql.Date sqlDateColumn) {
-		this.sqlDateColumn = sqlDateColumn;
-	}
+  public void setSqlDatetimeColumn(java.sql.Timestamp sqlDatetimeColumn) {
+    this.sqlDatetimeColumn = sqlDatetimeColumn;
+  }
 
-	public java.sql.Time getSqlTimeColumn() {
-		return sqlTimeColumn;
-	}
+  public java.sql.Timestamp getSqlTimestampColumn() {
+    return sqlTimestampColumn;
+  }
 
-	public void setSqlTimeColumn(java.sql.Time sqlTimeColumn) {
-		this.sqlTimeColumn = sqlTimeColumn;
-	}
+  public void setSqlTimestampColumn(java.sql.Timestamp sqlTimestampColumn) {
+    this.sqlTimestampColumn = sqlTimestampColumn;
+  }
 
-	@Override
-	public String toString() {
-		return "TimeTest ["
-				+ "\n timeTestId=" + timeTestId + ", "
-				+ "\n datetimeColumn=" + datetimeColumn + ","
-				+ "\n timestampColumn=" + timestampColumn + ", "
-				+ "\n dateColumn=" + dateColumn + ", "
-				+ "\n timeColumn=" + timeColumn + ", "
-				+ "\n sqlDatetimeColumn=" + sqlDatetimeColumn + ", "
-				+ "\n sqlTimestampColumn=" + sqlTimestampColumn + ", "
-			    + "\n sqlDateColumn=" + sqlDateColumn + ", "
-			    + "\n sqlTimeColumn=" + sqlTimeColumn + "]";
-	}
+  public java.sql.Date getSqlDateColumn() {
+    return sqlDateColumn;
+  }
 
-	
+  public void setSqlDateColumn(java.sql.Date sqlDateColumn) {
+    this.sqlDateColumn = sqlDateColumn;
+  }
+
+  public java.sql.Time getSqlTimeColumn() {
+    return sqlTimeColumn;
+  }
+
+  public void setSqlTimeColumn(java.sql.Time sqlTimeColumn) {
+    this.sqlTimeColumn = sqlTimeColumn;
+  }
+
+  @Override
+  public String toString() {
+    return "TimeTest ["
+        + "\n timeTestId=" + timeTestId + ", "
+        + "\n datetimeColumn=" + datetimeColumn + ","
+        + "\n timestampColumn=" + timestampColumn + ", "
+        + "\n dateColumn=" + dateColumn + ", "
+        + "\n timeColumn=" + timeColumn + ", "
+        + "\n sqlDatetimeColumn=" + sqlDatetimeColumn + ", "
+        + "\n sqlTimestampColumn=" + sqlTimestampColumn + ", "
+          + "\n sqlDateColumn=" + sqlDateColumn + ", "
+          + "\n sqlTimeColumn=" + sqlTimeColumn + "]";
+  }
+
+
 }

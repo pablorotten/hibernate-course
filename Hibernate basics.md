@@ -183,14 +183,14 @@ Create a Composite Value Type (CVT) class with the @Embeddable annotation:
 @Embeddable // Composite value type
 public class Address {
 
-	@Column(name="ADDRESS_LINE_1")
-	private String addressLine1;
+  @Column(name="ADDRESS_LINE_1")
+  private String addressLine1;
 
-	@Column(name="ADDRESS_LINE_2")
-	private String addressLine2;
-	
-	@Column(name="CITY")
-	private String city;
+  @Column(name="ADDRESS_LINE_2")
+  private String addressLine2;
+
+  @Column(name="CITY")
+  private String city;
 }
 ```
 
@@ -205,14 +205,14 @@ Then, write the getters and setters for all the attributes of the CVT @Embeddabl
 @Table(name="BANK")
 public class Bank {
 
-	@Embedded // Composite value type. Annotation not needed, Hibernate figures out
-	private Address address = new Address();
-	
-	// Getters and Setters from the Address class
-	public String getAddressLine1() {	return address.getAddressLine1();	}
-	public void setAddressLine1(String addressLine1) { this.address.setAddressLine1(addressLine1);	}
-	public String getCity() {	return address.getCity();	}
-	//...
+  @Embedded // Composite value type. Annotation not needed, Hibernate figures out
+  private Address address = new Address();
+
+  // Getters and Setters from the Address class
+  public String getAddressLine1() {  return address.getAddressLine1();  }
+  public void setAddressLine1(String addressLine1) { this.address.setAddressLine1(addressLine1);  }
+  public String getCity() {  return address.getCity();  }
+  //...
 }
 ```
 
@@ -498,8 +498,8 @@ session.save(account)
 "One to Many" relationship where both entities know each other. 
 
 **Source** Annotations:
-*	@ManyToOne: Many Sources to One Target
-*	@JoinColumn(name="FK_column_name")
+*  @ManyToOne: Many Sources to One Target
+*  @JoinColumn(name="FK_column_name")
 
 **Target** Annotations:
 * @OneToMany(cascade=CascadeType.ALL, mappedBy="Source_attribute"): mappedBy Source attribute that maps the relationship
@@ -553,7 +553,7 @@ by A, the **Source**
 
 **Source** Annotations. Now the Source is the *One* part of the relationship, A:
 * @OneToMany(cascade=CascadeType.ALL)
-*	@JoinTable(
+*  @JoinTable(
     name="JOIN_TABLE_NAME", 
     joinColumns=@JoinColumn(name="JOIN_TABLE_COLUMN_NAME_OF_SOURCE_FK"), 
     inverseJoinColumns=@JoinColumn(name="JOIN_TABLE_COLUMN_NAME_OF_TARGET_FK"))
@@ -565,8 +565,8 @@ But ignoring the JoinTable, we could map this relationship without the it, and t
 > ❓ And again the question: What is the rule for being Source or Target?
 
 **Target** Annotations. Now the Source is the *Many* part of the relationship, B:
-*	@ManyToOne(cascade = CascadeType.ALL)// Part of a @JoinTable relationship
-*	@JoinColumn(name="ACCOUNT_ID")// The column name of the TRANSACTION table where is the FK of ACCOUNT.
+*  @ManyToOne(cascade = CascadeType.ALL)// Part of a @JoinTable relationship
+*  @JoinColumn(name="ACCOUNT_ID")// The column name of the TRANSACTION table where is the FK of ACCOUNT.
 
 In our example, we have this:
 ```
