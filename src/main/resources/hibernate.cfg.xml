@@ -29,6 +29,7 @@
     <mapping class="com.infiniteskills.data.entities.Transaction"/>
     <mapping class="com.infiniteskills.data.entities.Budget"/>
     <mapping class="com.infiniteskills.data.entities.Currency"/>
+    <mapping class="com.infiniteskills.data.entities.Market"/>
 
   </session-factory>
 

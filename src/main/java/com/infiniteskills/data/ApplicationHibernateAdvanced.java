@@ -21,7 +21,8 @@ public class ApplicationHibernateAdvanced {
     try {
       sessionFactory = HibernateUtil.getSessionFactory();
       session = sessionFactory.openSession();
-      currencyDemo(session, session2, tx, tx2, sessionFactory);
+//      compoundPKDemo(session, session2, tx, tx2, sessionFactory);
+      compoundJoinColumnsDemo(session, tx, sessionFactory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -36,13 +37,13 @@ public class ApplicationHibernateAdvanced {
   }
 
 
-  public static void currencyDemo(Session session, Session session2, org.hibernate.Transaction tx, org.hibernate.Transaction tx2, SessionFactory sessionFactory) {
+  public static void compoundPKDemo(Session session, Session session2, org.hibernate.Transaction tx, org.hibernate.Transaction tx2, SessionFactory sessionFactory) {
     tx = session.beginTransaction();
 
     Currency currency = new Currency();
-    currency.setCountryName("Spain");
-    currency.setName("Peseta");
-    currency.setSymbol("pts");
+    currency.setCountryName("United Kingdom");
+    currency.setName("Pound");
+    currency.setSymbol("£");
 
     session.persist(currency);
     tx.commit();
@@ -51,17 +52,29 @@ public class ApplicationHibernateAdvanced {
     tx2 = session2.beginTransaction();
 
     Currency dbCurrency = (Currency) session2.get(Currency.class,
-            new CurrencyId("Peseta", "Spain"));
+            new CurrencyId("Pound", "United Kingdom"));
     System.out.println(dbCurrency.getName());
 
     tx2.commit();
   }
 
-  private static Date getMyBirthday() {
-    Calendar calendar = Calendar.getInstance();
-    calendar.set(Calendar.YEAR, 1984);
-    calendar.set(Calendar.MONTH, 6);
-    calendar.set(Calendar.DATE, 19);
-    return calendar.getTime();
+
+  public static void compoundJoinColumnsDemo(Session session, org.hibernate.Transaction tx, SessionFactory sessionFactory) {
+    tx = session.beginTransaction();
+
+    Currency currency = new Currency();
+    currency.setCountryName("United Kingdom");
+    currency.setName("Pound");
+    currency.setSymbol("£");
+
+    Market market = new Market();
+    market.setMarketName("London Stock Exchange");
+    market.setCurrency(currency);
+
+    session.persist(market);
+    tx.commit();
+
+    Market dbMarket = (Market) session.get(Market.class, market.getMarketId());
+    System.out.println(dbMarket.getCurrency().getName());
   }
 }
