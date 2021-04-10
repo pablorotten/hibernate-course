@@ -24,7 +24,8 @@ public class ApplicationHibernateAdvanced {
       session = sessionFactory.openSession();
 //      compoundPKDemo(session, session2, tx, tx2, sessionFactory);
 //      compoundJoinColumnsDemo(session, tx, sessionFactory);
-      enumerationsDemo(session, tx, sessionFactory);
+//      enumerationsDemo(session, tx, sessionFactory);
+      mappedSuperclassDemo(session, tx, sessionFactory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -108,4 +109,40 @@ public class ApplicationHibernateAdvanced {
     account.setCreatedDate(new Date());
     return account;
   }
+
+  public static void mappedSuperclassDemo(Session session, org.hibernate.Transaction tx, SessionFactory sessionFactory) {
+    sessionFactory = HibernateUtil.getSessionFactory();
+    session = sessionFactory.openSession();
+    tx = session.beginTransaction();
+
+    Stock stock = createStock();
+    session.save(stock);
+
+    Bond bond = createBond();
+    session.save(bond);
+
+    tx.commit();
+  }
+
+  private static Bond createBond() {
+    Bond bond = new Bond();
+    bond.setInterestRate(new BigDecimal("123.22"));
+    bond.setIssuer("JP Morgan Chase");
+    bond.setMaturityDate(new Date());
+    bond.setPurchaseDate(new Date());
+    bond.setName("Long Term Bond Purchases");
+    bond.setValue(new BigDecimal("10.22"));
+    return bond;
+  }
+
+  private static Stock createStock(){
+    Stock stock = new Stock();
+    stock.setIssuer("Allen Edmonds");
+    stock.setName("Private American Stock Purchases");
+    stock.setPurchaseDate(new Date());
+    stock.setQuantity(new BigDecimal("1922"));
+    stock.setSharePrice(new BigDecimal("100.00"));
+    return stock;
+  }
+
 }

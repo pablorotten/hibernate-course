@@ -87,3 +87,23 @@ private AccountType accountType;
 
 Using ```@Enumerated(EnumType.STRING)``` stores the enumeration value in database. By default it uses the ordinary of the assigned value.
 This is very dangerous because if the order of the enumeration change, the values in database will be wrong.
+
+### Mapped Superclass Inheritance
+
+We need to map the inheritance between classes in order to persist them. We just need to use the annotation ```@MappedSuperclass``` in the supperclass to tell
+hibernate to use the superclass fields to persist the subclass.
+
+```java
+@MappedSuperclass
+public abstract class Investment {
+
+@Entity
+@Table(name = "BOND")
+public class Bond extends Investment{
+
+@Entity
+@Table(name = "STOCK")
+public class Stock extends Investment {
+```
+
+⚠ The @MappedSuperclass is only for abstract classes!!! If a class has this annotation it can't be persisted not instantiated!!!
