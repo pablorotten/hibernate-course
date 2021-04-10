@@ -5,6 +5,7 @@ import com.infiniteskills.data.entities.ids.CurrencyId;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -22,7 +23,8 @@ public class ApplicationHibernateAdvanced {
       sessionFactory = HibernateUtil.getSessionFactory();
       session = sessionFactory.openSession();
 //      compoundPKDemo(session, session2, tx, tx2, sessionFactory);
-      compoundJoinColumnsDemo(session, tx, sessionFactory);
+//      compoundJoinColumnsDemo(session, tx, sessionFactory);
+      enumerationsDemo(session, tx, sessionFactory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -58,7 +60,6 @@ public class ApplicationHibernateAdvanced {
     tx2.commit();
   }
 
-
   public static void compoundJoinColumnsDemo(Session session, org.hibernate.Transaction tx, SessionFactory sessionFactory) {
     tx = session.beginTransaction();
 
@@ -76,5 +77,35 @@ public class ApplicationHibernateAdvanced {
 
     Market dbMarket = (Market) session.get(Market.class, market.getMarketId());
     System.out.println(dbMarket.getCurrency().getName());
+  }
+
+  public static void enumerationsDemo(Session session, org.hibernate.Transaction tx, SessionFactory sessionFactory) {
+    sessionFactory = HibernateUtil.getSessionFactory();
+    session = sessionFactory.openSession();
+    tx = session.beginTransaction();
+
+    Account account = createNewAccount();
+    account.setAccountType(AccountType.SAVINGS);
+
+    session.save(account);
+    tx.commit();
+
+    Account dbAccount = (Account) session.get(Account.class, account.getAccountId());
+    System.out.println(dbAccount.getName());
+    System.out.println(dbAccount.getAccountType());
+  }
+
+  private static Account createNewAccount() {
+    Account account = new Account();
+    account.setCloseDate(new Date());
+    account.setOpenDate(new Date());
+    account.setCreatedBy("Kevin Bowersox");
+    account.setInitialBalance(new BigDecimal("50.00"));
+    account.setName("Savings Account");
+    account.setCurrentBalance(new BigDecimal("100.00"));
+    account.setLastUpdatedBy("Kevin Bowersox");
+    account.setLastUpdatedDate(new Date());
+    account.setCreatedDate(new Date());
+    return account;
   }
 }

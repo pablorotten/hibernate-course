@@ -68,3 +68,22 @@ public class Market {
   ...
 }
 ```
+
+### Enumerations
+
+We can use enumerations in order to have fixed values for a column. Just create an enumeration and use it as the type of the field
+
+```java
+public enum AccountType {
+	LOAN,
+	SAVINGS,
+	CHECKING
+}
+
+@Enumerated(EnumType.STRING) // Instead of using the ordinal, use the string value of the enumeration
+@Column(name="ACCOUNT_TYPE")
+private AccountType accountType;
+```
+
+Using ```@Enumerated(EnumType.STRING)``` stores the enumeration value in database. By default it uses the ordinary of the assigned value.
+This is very dangerous because if the order of the enumeration change, the values in database will be wrong.

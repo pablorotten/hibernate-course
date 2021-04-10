@@ -14,16 +14,20 @@ public class Account {
   @Column(name = "ACCOUNT_ID")
   private Long accountId;
 
-  @ManyToMany(cascade=CascadeType.ALL)// Source Entity
-  @JoinTable(
-          name="USER_ACCOUNT",// Join table name
-          joinColumns=@JoinColumn(name="ACCOUNT_ID"),// Join table Source Entity Column
-          inverseJoinColumns=@JoinColumn(name="USER_ID"))// Join table Target Entity Column
-  private Set<User> users = new HashSet<>();// Collection of Target Entities
+  @ManyToMany(cascade = CascadeType.ALL)
+  @JoinTable(name = "USER_ACCOUNT", joinColumns = @JoinColumn(name = "ACCOUNT_ID"), inverseJoinColumns = @JoinColumn(name = "USER_ID"))
+  private Set<User> users = new HashSet<>();
 
-  @OneToMany(cascade=CascadeType.ALL, mappedBy="account")// Mapped by account in Transaction
-//  @JoinColumn(name="ACCOUNT_ID", nullable=false)// The column name of the TRANSACTION table where is the FK of ACCOUNT. Has to be nullabe=false. Remove if it becomes a bidirectional relationship!!!
-  List<Transaction> transactions = new ArrayList();
+  @ManyToOne
+  @JoinColumn(name = "BANK_ID")
+  private Bank bank;
+
+  @Enumerated(EnumType.STRING) // Instead of using the ordinal, use the string value of the enumeration
+  @Column(name="ACCOUNT_TYPE")
+  private AccountType accountType;
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+  List<Transaction> transactions = new ArrayList<>();
 
   @Column(name = "NAME")
   private String name;
@@ -140,7 +144,20 @@ public class Account {
     this.transactions = transactions;
   }
 
-  public Set<User> getUsers() { return users;  }
+  public Set<User> getUsers() {
+    return users;
+  }
 
-  public void setUsers(Set<User> users) {  this.users = users;  }
+  public void setUsers(Set<User> users) {
+    this.users = users;
+  }
+
+  public final AccountType getAccountType() {
+    return accountType;
+  }
+
+  public final void setAccountType(AccountType accountType) {
+    this.accountType = accountType;
+  }
+
 }
