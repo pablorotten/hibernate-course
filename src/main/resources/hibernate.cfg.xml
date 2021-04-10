@@ -32,6 +32,7 @@
     <mapping class="com.infiniteskills.data.entities.Market"/>
     <mapping class="com.infiniteskills.data.entities.Bond"/>
     <mapping class="com.infiniteskills.data.entities.Stock"/>
+    <mapping class="com.infiniteskills.data.entities.Portfolio"/>
 
   </session-factory>
 

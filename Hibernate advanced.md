@@ -69,7 +69,7 @@ public class Market {
 }
 ```
 
-### Enumerations
+### Enumerations @Enumerated
 
 We can use enumerations in order to have fixed values for a column. Just create an enumeration and use it as the type of the field
 
@@ -88,9 +88,9 @@ private AccountType accountType;
 Using ```@Enumerated(EnumType.STRING)``` stores the enumeration value in database. By default it uses the ordinary of the assigned value.
 This is very dangerous because if the order of the enumeration change, the values in database will be wrong.
 
-### Mapped Superclass Inheritance
+### Mapped Superclass Inheritance @MappedSuperclass
 
-We need to map the inheritance between classes in order to persist them. We just need to use the annotation ```@MappedSuperclass``` in the supperclass to tell
+When we are using superclasses, we need to map the inheritance between classes in order to persist them. We just need to use the annotation ```@MappedSuperclass``` in the supperclass to tell
 hibernate to use the superclass fields to persist the subclass.
 
 ```java
@@ -106,4 +106,17 @@ public class Bond extends Investment{
 public class Stock extends Investment {
 ```
 
-⚠ The @MappedSuperclass is only for abstract classes!!! If a class has this annotation it can't be persisted not instantiated!!!
+⚠ The @MappedSuperclass annotation has 2 limitations:
+* @MappedSuperclass class can't be persisted nor instantiated!!! So it must behave as an abstract class (not mandatory but highly recomended)
+* You can't use the @MappedSuperclass class as a generic type. For example, this is forbidden: ```List<Superclass> list```
+
+### Table Per Class Inheritance @Inheritance
+
+To have something more flexible than @MappedSuperclass, we can use the **@Inheritance** annotation using the strategy **InheritanceType.TABLE_PER_CLASS**
+
+This strategy is very similar to @MappedSuperclass. Will create a table for each subclass, but it will allow us to use the superclass as well.
+
+* The superclass must have an @Id that will be used by the subclasses, which don't have id.
+* We can't use the standard Identity generator, we need to define a custom one with @GeneratedValue and @TableGenerator ❓ why???
+* Hibernate has to perform an Union loosing performance
+
