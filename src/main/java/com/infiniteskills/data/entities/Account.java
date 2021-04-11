@@ -1,9 +1,29 @@
 package com.infiniteskills.data.entities;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "ACCOUNT")
@@ -26,12 +46,12 @@ public class Account {
   @JoinTable(name = "USER_ACCOUNT", joinColumns = @JoinColumn(name = "ACCOUNT_ID"), inverseJoinColumns = @JoinColumn(name = "USER_ID"))
   private Set<User> users = new HashSet<>();
 
-  @ManyToOne
+  @ManyToOne(fetch=FetchType.LAZY)
   @JoinColumn(name = "BANK_ID")
   private Bank bank;
 
-  @Enumerated(EnumType.STRING) // Instead of using the ordinal, use the string value of the enumeration
-  @Column(name="ACCOUNT_TYPE")
+  @Enumerated(EnumType.STRING)
+  @Column(name = "ACCOUNT_TYPE")
   private AccountType accountType;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
@@ -166,6 +186,14 @@ public class Account {
 
   public final void setAccountType(AccountType accountType) {
     this.accountType = accountType;
+  }
+
+  public Bank getBank() {
+    return bank;
+  }
+
+  public void setBank(Bank bank) {
+    this.bank = bank;
   }
 
 }

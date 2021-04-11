@@ -26,7 +26,8 @@ public class ApplicationHql {
 //      parametersDemo(session, tx, factory);
 //      joinsDemo(session, tx, factory);
 //      functionsDemo(session, tx, factory);
-      namedQueriesDemo(session, tx, factory);
+//      namedQueriesDemo(session, tx, factory);
+      lazyDemo(session, tx, factory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -115,6 +116,21 @@ public class ApplicationHql {
 
     for(Account a:accounts){
       System.out.println(a.getName());
+    }
+
+    tx.commit();
+  }
+
+
+  public static void lazyDemo(Session session, org.hibernate.Transaction tx, SessionFactory factory) {
+
+    Query query = session.getNamedQuery("Account.largeDeposits");
+    List<Account> accounts = query.list();
+    System.out.println("Query has been executed.");
+
+    for(Account a:accounts){
+      System.out.println(a.getName());
+      System.out.println(a.getBank().getName());
     }
 
     tx.commit();

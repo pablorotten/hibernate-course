@@ -126,3 +126,37 @@ Query query = session.getNamedQuery("Account.largeDeposits");
 Query query = em.createNamedQuery("Account.byWithdrawlAmount");
 query.setParameter("amount", new BigDecimal("99"));
 ```
+
+## Lazy loading
+When a entity A has a reference to another B. When A is instantiated, this will
+trigger an creation of B, making ane extra query. This is because by default, the
+association fetch type is ```EAGER```. So this will happen all the times we use A giving a bad performance.
+
+Using ```LAZY``` won't pull back the asociation with B until it's totally necessary
+
+Account.java
+```java
+@Entity
+@Table(name = "ACCOUNT")
+public class Account {
+
+  ...
+  @ManyToOne(fetch=FetchType.LAZY)
+  @JoinColumn(name = "BANK_ID")
+  private Bank bank;
+  ...
+}
+```
+
+Usage:
+```java
+Query query = session.getNamedQuery("Account.largeDeposits");
+List<Account> accounts = query.list();
+// Query for bank not executed
+
+for(Account a:accounts){
+  System.out.println(a.getName());
+  // Now the query for bank will be executed since we need the bank name
+  System.out.println(a.getBank().getName());
+}
+```
