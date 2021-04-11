@@ -36,7 +36,8 @@ public class ApplicationHql {
     session = factory.openSession();
     tx = session.beginTransaction();
 
-    Query query = session.createQuery("select t from Transaction t");
+    Query query = session.createQuery("SELECT t FROM Transaction t "
+            + "WHERE t.amount > 75 and t.transactionType = 'Withdrawl'");
     List<Transaction> transactions = query.list();
 
     for (Transaction t:transactions) {

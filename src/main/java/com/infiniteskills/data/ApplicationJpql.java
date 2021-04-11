@@ -33,7 +33,12 @@ public class ApplicationJpql {
 
 
   public static void writingQueries(EntityManager em, EntityTransaction tx, EntityManagerFactory factory) {
-    TypedQuery<Transaction> query = em.createQuery("from Transaction t order by t.title", Transaction.class);
+
+    TypedQuery<Transaction> query = em.createQuery(
+            "from Transaction t"
+                    + " where (t.amount between 75 and 100) and t.title like '%s'"
+                    + " order by t.title", Transaction.class);
+
     List<Transaction> transactions = query.getResultList();
 
     for(Transaction t:transactions){

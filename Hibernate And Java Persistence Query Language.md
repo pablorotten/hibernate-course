@@ -21,3 +21,21 @@ Using **JQPL** is highly recommended to use ```TypedQuery``` for using the entit
 ```java
 TypedQuery<Transaction> query = em.createQuery("from Transaction t order by t.title", Transaction.class);
 ```
+
+## Expressions And Operators
+
+Some examples:
+
+HQL using single quotes for string literals
+```java
+Query query = session.createQuery("SELECT t FROM Transaction t "
+  + "WHERE t.amount > 75 AND t.transactionType = 'Withdrawl'");
+```
+
+JPQL suing a wildcard for Like
+```java
+TypedQuery<Transaction> query = em.createQuery(
+  "FROM Transaction t"
+    + " WHERE (t.amount between 75 and 100) AND t.title LIKE '%s'"
+    + " ORDER BY t.title", Transaction.class);
+```
