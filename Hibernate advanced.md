@@ -155,3 +155,23 @@ public class Bond extends Investment{
 ```
 
 Everything will be persistend into **Investment** table.
+
+### Building A Persistence Layer
+
+Using the **Dao pattern** the recommended project structure is
+
+* main.java.com.customName
+  * data
+    * dao
+      * interfaces
+        * **Dao.java**
+        * **ConcreteClassDao.java**
+      * **AbstractDao.java**: implements ```Dao.java```
+      * **ConcreteClassImpDao.java**: implements ```ConcreteClassDao.java```
+    * entities: all the Entity classes
+
+The Dao pattern consists in:
+* **Dao.java**: Interface that defines all generic operations such as findById, save, delete, etc.
+* **AbstractDao.java**: Implements ```Dao.java``` generic operations that can be used for any entity.
+* **ConcreteClassDao.java**: Interface that defines concrete operations for the **ConcreteClass**
+* **ConcreteClassImpDao.java**: Implements ```ConcreteClassDao.java```

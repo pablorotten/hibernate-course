@@ -1,11 +1,14 @@
 package com.infiniteskills.data;
 
+import com.infiniteskills.data.dao.UserHibernateDao;
+import com.infiniteskills.data.dao.interfaces.UserDao;
 import com.infiniteskills.data.entities.*;
 import com.infiniteskills.data.entities.ids.CurrencyId;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -27,7 +30,8 @@ public class ApplicationHibernateAdvanced {
 //      enumerationsDemo(session, tx, sessionFactory);
 //      mappedSuperclassDemo(session, tx, sessionFactory);
 //      tablePerClassInheritanceDemo(session, tx, sessionFactory);
-      singleTableClassInheritanceDemo(session, tx, sessionFactory);
+//      singleTableClassInheritanceDemo(session, tx, sessionFactory);
+      buildingPersistenceLayerDemo(session, tx, sessionFactory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -208,4 +212,44 @@ public class ApplicationHibernateAdvanced {
     }
   }
 
+
+  public static void buildingPersistenceLayerDemo(Session session, org.hibernate.Transaction tx, SessionFactory sessionFactory) {
+    sessionFactory = HibernateUtil.getSessionFactory();
+    session = sessionFactory.openSession();
+
+    UserDao dao = new UserHibernateDao();
+    dao.setSession(session);
+
+    tx = session.beginTransaction();
+
+    User user = createUser();
+
+    dao.save(user);
+
+    tx.commit();
+  }
+
+  private static User createUser() {
+    User user = new User();
+//    Address address = createAddress();
+//    user.setAddresses(Arrays.asList(new Address[] { createAddress() }));
+    user.setBirthDate(new Date());
+    user.setCreatedBy("Kevin Bowersox");
+    user.setCreatedDate(new Date());
+    user.setCredential(createCredential(user));
+    user.setEmailAddress("test@test.com");
+    user.setFirstName("John");
+    user.setLastName("Doe");
+    user.setLastUpdatedBy("system");
+    user.setLastUpdatedDate(new Date());
+    return user;
+  }
+
+  private static Credential createCredential(User user) {
+    Credential credential = new Credential();
+    credential.setUser(user);
+    credential.setUsername("test_username");
+    credential.setPassword("test_password");
+    return credential;
+  }
 }
