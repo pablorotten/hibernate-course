@@ -175,3 +175,18 @@ The Dao pattern consists in:
 * **AbstractDao.java**: Implements ```Dao.java``` generic operations that can be used for any entity.
 * **ConcreteClassDao.java**: Interface that defines concrete operations for the **ConcreteClass**
 * **ConcreteClassImpDao.java**: Implements ```ConcreteClassDao.java```
+
+### Views For Complex Queries
+
+How to create custom sql queries? Create a view in database and map it into an entity.
+
+In @table set the name of the view and in @Id don't use @GeneratedValue
+```java
+@Entity
+@Table(name = "V_USER_CREDENTIAL")
+public class UserCredentialView {
+
+	@Id
+	@Column(name="USER_ID")
+	private Long userId;
+```
