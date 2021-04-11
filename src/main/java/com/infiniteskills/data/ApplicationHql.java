@@ -23,7 +23,8 @@ public class ApplicationHql {
       // TODO: functions here!
 //      writingQueriesDemo(session, tx, factory);
 //      expressionsAndOperatorsDemo(session, tx, factory);
-      parametersDemo(session, tx, factory);
+//      parametersDemo(session, tx, factory);
+      joinsDemo(session, tx, factory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -74,6 +75,18 @@ public class ApplicationHql {
 
     for (Transaction t : transactions) {
       System.out.println(t.getTitle());
+    }
+
+    tx.commit();
+  }
+
+  public static void joinsDemo(Session session, org.hibernate.Transaction tx, SessionFactory factory) {
+    Query query = session.createQuery("select distinct t.account from Transaction t where t.amount > 500 and t.transactionType = 'Deposit'");
+
+    List<Account> accounts = query.list();
+
+    for(Account a:accounts){
+      System.out.println(a.getName());
     }
 
     tx.commit();

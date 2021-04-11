@@ -64,3 +64,15 @@ TypedQuery<Transaction> query = em.createQuery("FROM Transaction t WHERE (t.amou
 query.setParameter(1, number1);
 query.setParameter(2, number2);
 ```
+
+## Joins
+In HQL we don't need to specify the join. In JPQL we have to explicitly do the Join.
+
+```java
+//HQL
+Query query = session.createQuery("select distinct t.account from Transaction t where t.amount > 500 and t.transactionType = 'Deposit'");
+
+//JPQL
+TypedQuery<Account> query = em.createQuery("select distinct a from Transaction t join t.account a where t.amount > 500 and t.transactionType = 'Deposit'",Account.class);
+
+```

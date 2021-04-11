@@ -1,5 +1,6 @@
 package com.infiniteskills.data;
 
+import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Transaction;
 
 import javax.persistence.*;
@@ -24,7 +25,8 @@ public class ApplicationJpql {
       // TODO: functions here!
 //      writingQueriesDemo(em, tx, factory);
 //      expressionsAndOperatorsDemo(em, tx, factory);
-      parametersDemo(em, tx, factory);
+//      parametersDemo(em, tx, factory);
+      joinsDemo(em, tx, factory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -82,6 +84,17 @@ public class ApplicationJpql {
 
     for (Transaction t : transactions) {
       System.out.println(t.getTitle());
+    }
+
+    tx.commit();
+  }
+  public static void joinsDemo(EntityManager em, EntityTransaction tx, EntityManagerFactory factory) {
+    TypedQuery<Account> query = em.createQuery("select distinct a from Transaction t join t.account a where t.amount > 500 and t.transactionType = 'Deposit'",Account.class);
+
+    List<Account> accounts = query.getResultList();
+
+    for(Account a:accounts){
+      System.out.println(a.getName());
     }
 
     tx.commit();
