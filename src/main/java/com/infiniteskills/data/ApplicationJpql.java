@@ -117,4 +117,18 @@ public class ApplicationJpql {
 
     tx.commit();
   }
+
+  public static void namedQueriesDemo(EntityManager em, EntityTransaction tx, EntityManagerFactory factory) {
+    Query query = em.createNamedQuery("Account.byWithdrawlAmount");
+    query.setParameter("amount", new BigDecimal("99"));
+
+    List<Object[]> accounts = query.getResultList();
+
+    for(Object[] a:accounts){
+      System.out.println(a[0]);
+      System.out.println(a[1]);
+    }
+
+    tx.commit();
+  }
 }

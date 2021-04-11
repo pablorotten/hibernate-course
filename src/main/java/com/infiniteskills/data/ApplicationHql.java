@@ -106,4 +106,16 @@ public class ApplicationHql {
 
     tx.commit();
   }
+
+  public static void namedQueriesDemo(Session session, org.hibernate.Transaction tx, SessionFactory factory) {
+
+    Query query = session.getNamedQuery("Account.largeDeposits");
+    List<Account> accounts = query.list();
+
+    for(Account a:accounts){
+      System.out.println(a.getName());
+    }
+
+    tx.commit();
+  }
 }
