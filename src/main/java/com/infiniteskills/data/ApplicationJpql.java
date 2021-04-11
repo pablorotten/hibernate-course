@@ -27,7 +27,8 @@ public class ApplicationJpql {
 //      expressionsAndOperatorsDemo(em, tx, factory);
 //      parametersDemo(em, tx, factory);
 //      joinsDemo(em, tx, factory);
-      functionsDemo(em, tx, factory);
+//      functionsDemo(em, tx, factory);
+      namedQueriesDemo(em, tx, factory);
 
     } catch (Exception e) {
       e.printStackTrace();

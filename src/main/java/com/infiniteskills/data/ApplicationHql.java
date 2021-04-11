@@ -25,7 +25,8 @@ public class ApplicationHql {
 //      expressionsAndOperatorsDemo(session, tx, factory);
 //      parametersDemo(session, tx, factory);
 //      joinsDemo(session, tx, factory);
-      functionsDemo(session, tx, factory);
+//      functionsDemo(session, tx, factory);
+      namedQueriesDemo(session, tx, factory);
 
     } catch (Exception e) {
       e.printStackTrace();
