@@ -20,7 +20,8 @@ public class ApplicationJpql {
       tx = em.getTransaction();
       tx.begin();
       // TODO: functions here!
-      writingQueries(em, tx, factory);
+//      writingQueriesDemo(em, tx, factory);
+      expressionsAndOperatorsDemo(em, tx, factory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -32,7 +33,22 @@ public class ApplicationJpql {
   }
 
 
-  public static void writingQueries(EntityManager em, EntityTransaction tx, EntityManagerFactory factory) {
+  public static void writingQueriesDemo(EntityManager em, EntityTransaction tx, EntityManagerFactory factory) {
+
+    TypedQuery<Transaction> query = em.createQuery(
+            "from Transaction t"
+                    + " where (t.amount between 75 and 100) and t.title like '%s'"
+                    + " order by t.title", Transaction.class);
+
+    List<Transaction> transactions = query.getResultList();
+
+    for(Transaction t:transactions){
+      System.out.println(t.getTitle());
+    }
+    tx.commit();
+  }
+
+  public static void expressionsAndOperatorsDemo(EntityManager em, EntityTransaction tx, EntityManagerFactory factory) {
 
     TypedQuery<Transaction> query = em.createQuery(
             "from Transaction t"

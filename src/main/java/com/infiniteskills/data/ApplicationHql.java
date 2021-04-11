@@ -19,7 +19,8 @@ public class ApplicationHql {
       factory = HibernateUtil.getSessionFactory();
       session = factory.openSession();
       // TODO: functions here!
-      writingQueries(session, tx, factory);
+//      writingQueriesDemo(session, tx, factory);
+      expressionsAndOperatorsDemo(session, tx, factory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -30,8 +31,21 @@ public class ApplicationHql {
     }
   }
 
+  public static void writingQueriesDemo(Session session, org.hibernate.Transaction tx, SessionFactory factory) {
+    factory = HibernateUtil.getSessionFactory();
+    session = factory.openSession();
+    tx = session.beginTransaction();
 
-  public static void writingQueries(Session session, org.hibernate.Transaction tx, SessionFactory factory) {
+    Query query = session.createQuery("select t from Transaction t");
+    List<Transaction> transactions = query.list();
+
+    for (Transaction t:transactions) {
+      System.out.println(t.getTitle());
+    }
+    tx.commit();
+  }
+
+  public static void expressionsAndOperatorsDemo(Session session, org.hibernate.Transaction tx, SessionFactory factory) {
     factory = HibernateUtil.getSessionFactory();
     session = factory.openSession();
     tx = session.beginTransaction();

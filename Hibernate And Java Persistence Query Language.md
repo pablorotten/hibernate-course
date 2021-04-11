@@ -39,3 +39,7 @@ TypedQuery<Transaction> query = em.createQuery(
     + " WHERE (t.amount between 75 and 100) AND t.title LIKE '%s'"
     + " ORDER BY t.title", Transaction.class);
 ```
+
+## Parameters
+
+Safely support user input
