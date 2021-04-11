@@ -26,7 +26,8 @@ public class ApplicationHibernateAdvanced {
 //      compoundJoinColumnsDemo(session, tx, sessionFactory);
 //      enumerationsDemo(session, tx, sessionFactory);
 //      mappedSuperclassDemo(session, tx, sessionFactory);
-      tablePerClassInheritanceDemo(session, tx, sessionFactory);
+//      tablePerClassInheritanceDemo(session, tx, sessionFactory);
+      singleTableClassInheritanceDemo(session, tx, sessionFactory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -147,6 +148,37 @@ public class ApplicationHibernateAdvanced {
   }
 
   public static void tablePerClassInheritanceDemo(Session session, org.hibernate.Transaction tx, SessionFactory sessionFactory) {
+    sessionFactory = HibernateUtil.getSessionFactory();
+    session = sessionFactory.openSession();
+    tx = session.beginTransaction();
+
+    Portfolio portfolio= new Portfolio();
+    portfolio.setName("First Investments");
+
+    Stock stock = createStock();
+    stock.setPortfolio(portfolio);
+
+    Bond bond = createBond();
+    bond.setPortfolio(portfolio);
+
+    portfolio.getInvestements().add(stock);
+    portfolio.getInvestements().add(bond);
+
+    session.save(stock);
+    session.save(bond);
+
+    tx.commit();
+
+    Portfolio dbPortfolio = (Portfolio) session.get(Portfolio.class, portfolio.getPortfolioId());
+    session.refresh(dbPortfolio);
+
+    for(Investment i:dbPortfolio.getInvestements()){
+      System.out.println(i.getName());
+    }
+  }
+
+
+  public static void singleTableClassInheritanceDemo(Session session, org.hibernate.Transaction tx, SessionFactory sessionFactory) {
     sessionFactory = HibernateUtil.getSessionFactory();
     session = sessionFactory.openSession();
     tx = session.beginTransaction();

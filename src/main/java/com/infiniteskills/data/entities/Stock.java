@@ -3,11 +3,11 @@ package com.infiniteskills.data.entities;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "STOCK")
+@DiscriminatorValue("ST")
 public class Stock extends Investment {
 
 	@Column(name = "SHARE_PRICE")
@@ -31,5 +31,4 @@ public class Stock extends Investment {
 	public void setQuantity(BigDecimal quantity) {
 		this.quantity = quantity;
 	}
-
 }

@@ -110,7 +110,7 @@ public class Stock extends Investment {
 * @MappedSuperclass class can't be persisted nor instantiated!!! So it must behave as an abstract class (not mandatory but highly recomended)
 * You can't use the @MappedSuperclass class as a generic type. For example, this is forbidden: ```List<Superclass> list```
 
-### Table Per Class Inheritance @Inheritance
+### Table Per Class @Inheritance
 
 To have something more flexible than @MappedSuperclass, we can use the **@Inheritance** annotation using the strategy **InheritanceType.TABLE_PER_CLASS**
 
@@ -120,3 +120,38 @@ This strategy is very similar to @MappedSuperclass. Will create a table for each
 * We can't use the standard Identity generator, we need to define a custom one with @GeneratedValue and @TableGenerator ❓ why???
 * Hibernate has to perform an Union loosing performance
 
+### Single Table @Inheritance
+
+We just use a table for the superclass where all the subclasses will be persisted. Depending on what are we persisting,
+some of the columns might not be used. Most common and best performance. Use the strategy **InheritanceType.SINGLE_TABLE**
+
+* The superclass must have a @Table to persist all the subclasses. Subclasses don't have @Table annotation
+* The superclass must have an @Id that will be used by the subclasses, which don't have id.
+* We can't use the standard Identity generator
+* ```@DiscriminatorColumn``` Column used to identify each entry which the subclass. By default is the class name, can be customized using ```@DiscriminatorValue```
+
+Superclass:
+```java
+@Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="INVESTMENT_TYPE")
+@Table(name="INVESTMENT")
+public abstract class Investment {
+
+	@Id
+	@GeneratedValue
+	@Column(name="INVESTMENT_ID")
+	private Long investmentId;
+```
+
+Subclass (no id):
+```java
+@Entity
+@DiscriminatorValue("BND")
+public class Bond extends Investment{
+
+	@Column(name = "VALUE")
+	private BigDecimal value;
+```
+
+Everything will be persistend into **Investment** table.
