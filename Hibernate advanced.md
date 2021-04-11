@@ -190,3 +190,20 @@ public class UserCredentialView {
 	@Column(name="USER_ID")
 	private Long userId;
 ```
+
+### Schema Generation
+
+Hibernate can auto generate our tables. Very useful for developing and POF, but not recommended for production at all.
+
+For that we need edit our ```hibernate.cfg.xml``` and use the property ```hbm2ddl.auto```
+
+```xml
+<hibernate-configuration>
+  <session-factory>
+		<property name="hbm2ddl.auto">create</property>
+```
+Some possible values for ```hbm2ddl.auto``` are:
+* create: creates all the tables
+* validate: checks if the tables and the objects match
+* update: if something is missing, adds it
+* create-drop: drops everything, creates the schema and finally drops everything again
