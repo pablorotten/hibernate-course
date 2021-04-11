@@ -74,5 +74,17 @@ Query query = session.createQuery("select distinct t.account from Transaction t 
 
 //JPQL
 TypedQuery<Account> query = em.createQuery("select distinct a from Transaction t join t.account a where t.amount > 500 and t.transactionType = 'Deposit'",Account.class);
-
 ```
+
+## Functions
+We can also use **SQL** functions. Also we can use projections.
+
+```java
+//HQL
+Query query = session.createQuery("select distinct t.account from Transaction t"
+            + " where t.amount > 500 and lower(t.transactionType) = 'deposit'");
+//JPQL
+Query query = em.createQuery("select distinct t.account.name, "
+        + "concat(concat(t.account.bank.name, ' '),t.account.bank.address.state)"
+        + " from Transaction t"
+        + " where t.amount > 500 and t.transactionType = 'Deposit'");```

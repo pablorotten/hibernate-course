@@ -26,7 +26,8 @@ public class ApplicationJpql {
 //      writingQueriesDemo(em, tx, factory);
 //      expressionsAndOperatorsDemo(em, tx, factory);
 //      parametersDemo(em, tx, factory);
-      joinsDemo(em, tx, factory);
+//      joinsDemo(em, tx, factory);
+      functionsDemo(em, tx, factory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -88,6 +89,7 @@ public class ApplicationJpql {
 
     tx.commit();
   }
+
   public static void joinsDemo(EntityManager em, EntityTransaction tx, EntityManagerFactory factory) {
     TypedQuery<Account> query = em.createQuery("select distinct a from Transaction t join t.account a where t.amount > 500 and t.transactionType = 'Deposit'",Account.class);
 
@@ -95,6 +97,22 @@ public class ApplicationJpql {
 
     for(Account a:accounts){
       System.out.println(a.getName());
+    }
+
+    tx.commit();
+  }
+
+  public static void functionsDemo(EntityManager em, EntityTransaction tx, EntityManagerFactory factory) {
+    Query query = em.createQuery("select distinct t.account.name, "
+            + "concat(concat(t.account.bank.name, ' '),t.account.bank.address.state)"
+            + " from Transaction t"
+            + " where t.amount > 500 and t.transactionType = 'Deposit'");
+
+    List<Object[]> accounts = query.getResultList();
+
+    for(Object[] a:accounts){
+      System.out.println(a[0]);
+      System.out.println(a[1]);
     }
 
     tx.commit();
