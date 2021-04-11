@@ -87,4 +87,13 @@ Query query = session.createQuery("select distinct t.account from Transaction t"
 Query query = em.createQuery("select distinct t.account.name, "
         + "concat(concat(t.account.bank.name, ' '),t.account.bank.address.state)"
         + " from Transaction t"
-        + " where t.amount > 500 and t.transactionType = 'Deposit'");```
+        + " where t.amount > 500 and t.transactionType = 'Deposit'");
+
+List<Object[]> accounts = query.getResultList();
+
+// projections
+for(Object[] a:accounts){
+  System.out.println(a[0]);
+  System.out.println(a[1]);
+}
+```
