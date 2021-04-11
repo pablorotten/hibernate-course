@@ -41,5 +41,26 @@ TypedQuery<Transaction> query = em.createQuery(
 ```
 
 ## Parameters
+Safely use user input
 
-Safely support user input
+### HQL parameters
+We can use positional and name parameter. Positional start counts with 0 and replace all the ```?``` widlcards.
+Using name parametr is safer:
+```java
+// positional
+Query query = session.createQuery("select t from Transaction t WHERE t.amount > ?");
+query.setParameter(0, new BigDecimal(scanner.next()));
+
+// name
+Query query = session.createQuery("select t from Transaction t WHERE t.amount > :amount");
+query.setParameter("amount", new BigDecimal(userAmount));
+```
+
+### JPQL parameters
+Very similar to HQL, but positional start counting from 1 instead of 0
+```java
+TypedQuery<Transaction> query = em.createQuery("FROM Transaction t WHERE (t.amount between ?1 and ?2)", Transaction.class);
+
+query.setParameter(1, number1);
+query.setParameter(2, number2);
+```

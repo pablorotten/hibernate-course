@@ -5,7 +5,9 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Scanner;
 
 public class ApplicationHql {
 
@@ -20,7 +22,8 @@ public class ApplicationHql {
       session = factory.openSession();
       // TODO: functions here!
 //      writingQueriesDemo(session, tx, factory);
-      expressionsAndOperatorsDemo(session, tx, factory);
+//      expressionsAndOperatorsDemo(session, tx, factory);
+      parametersDemo(session, tx, factory);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -57,6 +60,22 @@ public class ApplicationHql {
     for (Transaction t:transactions) {
       System.out.println(t.getTitle());
     }
+    tx.commit();
+  }
+
+  public static void parametersDemo(Session session, org.hibernate.Transaction tx, SessionFactory factory) {
+    Scanner scanner = new Scanner(System.in);
+    Query query = session.createQuery("select t from Transaction t "
+            + "where t.amount > :amount and t.transactionType = 'Withdrawl'");
+    System.out.println("Please specify an amount:");
+
+    query.setParameter("amount", new BigDecimal(scanner.next()));
+    List<Transaction> transactions = query.list();
+
+    for (Transaction t : transactions) {
+      System.out.println(t.getTitle());
+    }
+
     tx.commit();
   }
 }
